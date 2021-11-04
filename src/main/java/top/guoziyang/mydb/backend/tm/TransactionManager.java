@@ -1,9 +1,7 @@
 package top.guoziyang.mydb.backend.tm;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -29,7 +27,7 @@ public class TransactionManager {
     // 超级事务，永远为commited状态
     public static final long SUPER_XID = 0;
     
-    private File file;
+    private RandomAccessFile file;
     private FileChannel fc;
     private long xidCounter;
     private Lock counterLock;
@@ -48,8 +46,9 @@ public class TransactionManager {
         }
 
         FileChannel fc = null;
+        RandomAccessFile raf = null;
         try {
-            RandomAccessFile raf = new RandomAccessFile(f, "rw");
+            raf = new RandomAccessFile(f, "rw");
             fc = raf.getChannel();
         } catch (FileNotFoundException e) {
            Panic.panic(e);
@@ -64,7 +63,7 @@ public class TransactionManager {
             Panic.panic(e);
         }
         
-        return new TransactionManager(f, fc);
+        return new TransactionManager(raf, fc);
     }
 
     public static TransactionManager open(String path) {
@@ -77,18 +76,19 @@ public class TransactionManager {
         }
 
         FileChannel fc = null;
+        RandomAccessFile raf = null;
         try {
-            RandomAccessFile raf = new RandomAccessFile(f, "rw");
+            raf = new RandomAccessFile(f, "rw");
             fc = raf.getChannel();
         } catch (FileNotFoundException e) {
            Panic.panic(e);
         }
 
-        return new TransactionManager(f, fc);
+        return new TransactionManager(raf, fc);
     }
 
-    private TransactionManager(File f, FileChannel fc) {
-        this.file = f;
+    private TransactionManager(RandomAccessFile raf, FileChannel fc) {
+        this.file = raf;
         this.fc = fc;
         counterLock = new ReentrantLock();
         checkXIDCounter();
@@ -99,9 +99,11 @@ public class TransactionManager {
      * 读取XID_FILE_HEADER中的xidcounter，根据它计算文件的理论长度，对比实际长度
      */
     private void checkXIDCounter() {
-        long fileLen = file.length();
-        if(fileLen == 0) {
-            Panic.panic(new RuntimeException("Error file length!"));
+        long fileLen = 0;
+        try {
+            fileLen = file.length();
+        } catch (IOException e1) {
+            Panic.panic(new RuntimeException("非法的XID文件"));
         }
         if(fileLen < LEN_XID_HEADER_LENGTH) {
             Panic.panic(new RuntimeException("非法的XID文件"));
@@ -216,6 +218,7 @@ public class TransactionManager {
     public void close() {
         try {
             fc.close();
+            file.close();
         } catch (IOException e) {
             Panic.panic(e);
         }
