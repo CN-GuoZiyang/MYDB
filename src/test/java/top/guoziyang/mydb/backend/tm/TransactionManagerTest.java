@@ -1,5 +1,6 @@
 package top.guoziyang.mydb.backend.tm;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -32,6 +33,7 @@ public class TransactionManagerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        new File("/tmp/tranmger_test.xid").delete();
     }
 
     private void worker() {

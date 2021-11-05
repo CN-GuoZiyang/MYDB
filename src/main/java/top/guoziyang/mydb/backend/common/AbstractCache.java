@@ -1,12 +1,9 @@
 package top.guoziyang.mydb.backend.common;
 
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,7 +26,7 @@ public abstract class AbstractCache<T> {
         lock = new ReentrantLock();
     }
 
-    public T get(long key) throws Exception {
+    protected T get(long key) throws Exception {
         while(true) {
             lock.lock();
             if(getting.containsKey(key)) {
@@ -85,7 +82,7 @@ public abstract class AbstractCache<T> {
     /**
      * 强行释放一个缓存
      */
-    public void release(long key) {
+    protected void release(long key) {
         lock.lock();
         try {
             T obj = cache.get(key);
@@ -101,7 +98,7 @@ public abstract class AbstractCache<T> {
     /**
      * 关闭缓存，写回所有资源
      */
-    public void close() {
+    protected void close() {
         lock.lock();
         try {
             Set<Long> keys = cache.keySet();

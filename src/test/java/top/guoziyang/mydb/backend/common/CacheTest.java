@@ -5,6 +5,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 
+import top.guoziyang.mydb.backend.utils.Panic;
+
 public class CacheTest {
 
     private CountDownLatch cdl;
@@ -28,11 +30,11 @@ public class CacheTest {
     private void work() {
         for(int i = 0; i < 1000; i++) {
             long uid = new Random(System.nanoTime()).nextInt();
-            long h;
+            long h = 0;
             try {
                 h = cache.get(uid);
             } catch (Exception e) {
-                continue;
+                Panic.panic(e);
             }
             assert h == uid;
         }
