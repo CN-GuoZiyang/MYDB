@@ -33,7 +33,7 @@ public class TransactionManagerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new File("/tmp/tranmger_test.xid").delete();
+        assert new File("/tmp/tranmger_test.xid").delete();
     }
 
     private void worker() {

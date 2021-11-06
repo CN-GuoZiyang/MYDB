@@ -6,6 +6,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import top.guoziyang.mydb.backend.dm.page.MockPage;
+import top.guoziyang.mydb.backend.dm.page.Page;
+
 public class MockPageCache implements PageCache {
 
     private Map<Integer, MockPage> cache = new HashMap<>();

@@ -1,4 +1,4 @@
-package top.guoziyang.mydb.backend.dm.pcache;
+package top.guoziyang.mydb.backend.dm.page;
 
 public interface Page {
     void lock();

@@ -1,5 +1,7 @@
 package top.guoziyang.mydb.backend.dm.pcache;
 
+import top.guoziyang.mydb.backend.dm.page.Page;
+
 public interface PageCache {
     
     public static final int PAGE_SIZE = 1 << 13;
