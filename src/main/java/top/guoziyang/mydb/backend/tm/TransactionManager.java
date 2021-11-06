@@ -103,10 +103,10 @@ public class TransactionManager {
         try {
             fileLen = file.length();
         } catch (IOException e1) {
-            Panic.panic(new RuntimeException("非法的XID文件"));
+            Panic.panic(new RuntimeException("Bad XID file"));
         }
         if(fileLen < LEN_XID_HEADER_LENGTH) {
-            Panic.panic(new RuntimeException("非法的XID文件"));
+            Panic.panic(new RuntimeException("Bad XID file"));
         }
 
         ByteBuffer buf = ByteBuffer.allocate(LEN_XID_HEADER_LENGTH);
@@ -119,7 +119,7 @@ public class TransactionManager {
         this.xidCounter = Parser.parseLong(buf.array());
         long end = getXidPosition(this.xidCounter + 1);
         if(end != fileLen) {
-            Panic.panic(new RuntimeException("非法的XID文件"));
+            Panic.panic(new RuntimeException("Bad XID file"));
         }
     }
 

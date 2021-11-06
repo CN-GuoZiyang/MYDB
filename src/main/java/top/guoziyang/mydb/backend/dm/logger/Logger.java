@@ -1,27 +1,23 @@
-package top.guoziyang.mydb.backend.dm.pcache;
+package top.guoziyang.mydb.backend.dm.logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import top.guoziyang.mydb.backend.dm.page.Page;
+import top.guoziyang.mydb.backend.common.Parser;
 import top.guoziyang.mydb.backend.utils.Panic;
 
-public interface PageCache {
-    
-    public static final int PAGE_SIZE = 1 << 13;
-
-    int newPage(byte[] initData);
-    Page getPage(int pgno) throws Exception;
+public interface Logger {
+    void log(byte[] data);
+    void truncate(long x) throws Exception;
+    byte[] next();
+    void rewind();
     void close();
-    void release(Page page);
 
-    void truncateByBgno(int maxPgno);
-    int getPageNumber();
-    void flushPage(Page pg);
-
-    public static PageCacheImpl create(String path, long memory) {
+    public static Logger create(String path) {
         File f = new File(path);
         try {
             if(!f.createNewFile()) {
@@ -42,10 +38,20 @@ public interface PageCache {
         } catch (FileNotFoundException e) {
            Panic.panic(e);
         }
-        return new PageCacheImpl(raf, fc, (int)memory/PAGE_SIZE);
+
+        ByteBuffer buf = ByteBuffer.wrap(Parser.int2Byte(0));
+        try {
+            fc.position(0);
+            fc.write(buf);
+            fc.force(true);
+        } catch (IOException e) {
+            Panic.panic(e);
+        }
+
+        return new LoggerImpl(raf, fc, 0);
     }
 
-    public static PageCacheImpl open(String path, long memory) {
+    public static Logger open(String path) {
         File f = new File(path);
         if(!f.exists()) {
             Panic.panic(new RuntimeException("File does not exists!"));
@@ -62,6 +68,10 @@ public interface PageCache {
         } catch (FileNotFoundException e) {
            Panic.panic(e);
         }
-        return new PageCacheImpl(raf, fc, (int)memory/PAGE_SIZE);
+
+        LoggerImpl lg = new LoggerImpl(raf, fc);
+        lg.init();
+
+        return lg;
     }
 }

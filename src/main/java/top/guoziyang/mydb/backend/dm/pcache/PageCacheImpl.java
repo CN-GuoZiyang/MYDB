@@ -1,7 +1,5 @@
 package top.guoziyang.mydb.backend.dm.pcache;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -25,51 +23,7 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
 
     private AtomicInteger pageNumbers;
 
-    public static PageCacheImpl create(String path, long memory) {
-        File f = new File(path);
-        try {
-            if(!f.createNewFile()) {
-                Panic.panic(new RuntimeException("File already exists!"));
-            }
-        } catch (Exception e) {
-            Panic.panic(e);
-        }
-        if(!f.canRead() || !f.canWrite()) {
-            Panic.panic(new RuntimeException("File cannot read or write"));
-        }
-
-        FileChannel fc = null;
-        RandomAccessFile raf = null;
-        try {
-            raf = new RandomAccessFile(f, "rw");
-            fc = raf.getChannel();
-        } catch (FileNotFoundException e) {
-           Panic.panic(e);
-        }
-        return new PageCacheImpl(raf, fc, (int)memory/PAGE_SIZE);
-    }
-
-    public static PageCacheImpl open(String path, long memory) {
-        File f = new File(path);
-        if(!f.exists()) {
-            Panic.panic(new RuntimeException("File does not exists!"));
-        }
-        if(!f.canRead() || !f.canWrite()) {
-            Panic.panic(new RuntimeException("File cannot read or write"));
-        }
-
-        FileChannel fc = null;
-        RandomAccessFile raf = null;
-        try {
-            raf = new RandomAccessFile(f, "rw");
-            fc = raf.getChannel();
-        } catch (FileNotFoundException e) {
-           Panic.panic(e);
-        }
-        return new PageCacheImpl(raf, fc, (int)memory/PAGE_SIZE);
-    }
-
-    public PageCacheImpl(RandomAccessFile file, FileChannel fileChannel, int maxResource) {
+    PageCacheImpl(RandomAccessFile file, FileChannel fileChannel, int maxResource) {
         super(maxResource);
         if(maxResource < MEM_MIN_LIM) {
             Panic.panic(new RuntimeException("Memory too small!"));
