@@ -41,13 +41,13 @@ public class LoggerImpl implements Logger {
     private long fileSize;  // 初始化时记录，log操作不更新
     private int xChecksum;
 
-    public LoggerImpl(RandomAccessFile raf, FileChannel fc) {
+    LoggerImpl(RandomAccessFile raf, FileChannel fc) {
         this.file = raf;
         this.fc = fc;
         lock = new ReentrantLock();
     }
 
-    public LoggerImpl(RandomAccessFile raf, FileChannel fc, int xChecksum) {
+    LoggerImpl(RandomAccessFile raf, FileChannel fc, int xChecksum) {
         this.file = raf;
         this.fc = fc;
         this.xChecksum = xChecksum;
