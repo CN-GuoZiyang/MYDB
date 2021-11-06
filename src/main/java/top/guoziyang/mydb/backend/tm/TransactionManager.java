@@ -9,8 +9,8 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import top.guoziyang.mydb.backend.common.Parser;
 import top.guoziyang.mydb.backend.utils.Panic;
+import top.guoziyang.mydb.backend.utils.Parser;
 
 public class TransactionManager {
 

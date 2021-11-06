@@ -10,8 +10,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.google.common.primitives.Bytes;
 
-import top.guoziyang.mydb.backend.common.Parser;
 import top.guoziyang.mydb.backend.utils.Panic;
+import top.guoziyang.mydb.backend.utils.Parser;
 
 /**
  * 日志文件读写

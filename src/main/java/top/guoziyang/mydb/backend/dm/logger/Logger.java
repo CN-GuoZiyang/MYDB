@@ -7,8 +7,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import top.guoziyang.mydb.backend.common.Parser;
 import top.guoziyang.mydb.backend.utils.Panic;
+import top.guoziyang.mydb.backend.utils.Parser;
 
 public interface Logger {
     void log(byte[] data);

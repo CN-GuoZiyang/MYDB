@@ -1,8 +1,17 @@
-package top.guoziyang.mydb.backend.common;
+package top.guoziyang.mydb.backend.utils;
 
 import java.nio.ByteBuffer;
 
 public class Parser {
+
+    public static byte[] short2Byte(short value) {
+        return ByteBuffer.allocate(Short.SIZE / Byte.SIZE).putShort(value).array();
+    }
+
+    public static short parseShort(byte[] buf) {
+        ByteBuffer buffer = ByteBuffer.wrap(buf, 0, 2);
+        return buffer.getShort();
+    }
 
     public static byte[] int2Byte(int value) {
         return ByteBuffer.allocate(Integer.SIZE / Byte.SIZE).putInt(value).array();
