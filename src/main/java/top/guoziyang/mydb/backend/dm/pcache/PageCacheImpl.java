@@ -15,7 +15,8 @@ import top.guoziyang.mydb.backend.utils.Panic;
 
 public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     
-    private static int MEM_MIN_LIM = 10;
+    private static final int MEM_MIN_LIM = 10;
+    public static final String DB_SUFFIX = ".db";
 
     private RandomAccessFile file;
     private FileChannel fc;
@@ -71,7 +72,7 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
             fc.position(offset);
             fc.read(buf);
         } catch(IOException e) {
-            Panic.panic(new RuntimeException(" "));
+            Panic.panic(e);
         }
         fileLock.unlock();
         return new PageImpl(pgno, buf.array(), this);

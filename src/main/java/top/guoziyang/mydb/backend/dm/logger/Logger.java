@@ -18,7 +18,7 @@ public interface Logger {
     void close();
 
     public static Logger create(String path) {
-        File f = new File(path);
+        File f = new File(path+LoggerImpl.LOG_SUFFIX);
         try {
             if(!f.createNewFile()) {
                 Panic.panic(new RuntimeException("File already exists!"));
@@ -52,7 +52,7 @@ public interface Logger {
     }
 
     public static Logger open(String path) {
-        File f = new File(path);
+        File f = new File(path+LoggerImpl.LOG_SUFFIX);
         if(!f.exists()) {
             Panic.panic(new RuntimeException("File does not exists!"));
         }

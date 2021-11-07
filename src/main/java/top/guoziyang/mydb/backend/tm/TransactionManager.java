@@ -26,6 +26,8 @@ public class TransactionManager {
 
     // 超级事务，永远为commited状态
     public static final long SUPER_XID = 0;
+
+    public static final String XID_SUFFIX = ".xid";
     
     private RandomAccessFile file;
     private FileChannel fc;
@@ -33,7 +35,7 @@ public class TransactionManager {
     private Lock counterLock;
 
     public static TransactionManager create(String path) {
-        File f = new File(path);
+        File f = new File(path+XID_SUFFIX);
         try {
             if(!f.createNewFile()) {
                 Panic.panic(new RuntimeException("File already exists!"));
@@ -67,7 +69,7 @@ public class TransactionManager {
     }
 
     public static TransactionManager open(String path) {
-        File f = new File(path);
+        File f = new File(path+XID_SUFFIX);
         if(!f.exists()) {
             Panic.panic(new RuntimeException("File does not exists!"));
         }

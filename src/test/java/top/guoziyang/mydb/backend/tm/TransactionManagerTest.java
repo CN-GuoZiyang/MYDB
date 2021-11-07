@@ -21,7 +21,7 @@ public class TransactionManagerTest {
 
     @Test
     public void testMultiThread() {
-        tmger = TransactionManager.create("/tmp/tranmger_test.xid");
+        tmger = TransactionManager.create("/tmp/tranmger_test");
         transMap = new ConcurrentHashMap<>();
         cdl = new CountDownLatch(noWorkers);
         for(int i = 0; i < noWorkers; i ++) {
