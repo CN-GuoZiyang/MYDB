@@ -15,8 +15,8 @@ public class CacheTest {
     @Test
     public void testCache() {
         cache = new MockCache();
-        cdl = new CountDownLatch(1000);
-        for(int i = 0; i < 1000; i ++) {
+        cdl = new CountDownLatch(200);
+        for(int i = 0; i < 200; i ++) {
             Runnable r = () -> work();
             new Thread(r).run();
         }
@@ -34,9 +34,11 @@ public class CacheTest {
             try {
                 h = cache.get(uid);
             } catch (Exception e) {
+                if(e.getMessage().equals("Cache is full!")) continue;
                 Panic.panic(e);
             }
             assert h == uid;
+            cache.release(h);
         }
         cdl.countDown();
     }
