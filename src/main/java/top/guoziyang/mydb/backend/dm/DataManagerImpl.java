@@ -7,9 +7,9 @@ import top.guoziyang.mydb.backend.dm.logger.Logger;
 import top.guoziyang.mydb.backend.dm.page.Page;
 import top.guoziyang.mydb.backend.dm.page.PageOne;
 import top.guoziyang.mydb.backend.dm.page.PageX;
+import top.guoziyang.mydb.backend.dm.pageCache.PageCache;
 import top.guoziyang.mydb.backend.dm.pageIndex.PageIndex;
 import top.guoziyang.mydb.backend.dm.pageIndex.PageInfo;
-import top.guoziyang.mydb.backend.dm.pcache.PageCache;
 import top.guoziyang.mydb.backend.tm.TransactionManager;
 import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.Types;
@@ -116,9 +116,9 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
 
     @Override
     protected DataItem getForCache(long uid) throws Exception {
-        short offset = (short)(uid & ((1 << 16) - 1));
+        short offset = (short)(uid & ((1L << 16) - 1));
         uid >>>= 32;
-        int pgno = (int)(uid & ((1 << 32) - 1));
+        int pgno = (int)(uid & ((1L << 32) - 1));
         Page pg = null;
         try {
             pg = pc.getPage(pgno);

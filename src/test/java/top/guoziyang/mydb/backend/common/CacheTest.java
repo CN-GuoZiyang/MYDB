@@ -1,5 +1,6 @@
 package top.guoziyang.mydb.backend.common;
 
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
@@ -8,6 +9,8 @@ import org.junit.Test;
 import top.guoziyang.mydb.backend.utils.Panic;
 
 public class CacheTest {
+
+    static Random random = new SecureRandom();
 
     private CountDownLatch cdl;
     private MockCache cache;
@@ -29,7 +32,7 @@ public class CacheTest {
 
     private void work() {
         for(int i = 0; i < 1000; i++) {
-            long uid = new Random(System.nanoTime()).nextInt();
+            long uid = random.nextInt();
             long h = 0;
             try {
                 h = cache.get(uid);

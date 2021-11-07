@@ -3,7 +3,7 @@ package top.guoziyang.mydb.backend.dm.page;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import top.guoziyang.mydb.backend.dm.pcache.PageCache;
+import top.guoziyang.mydb.backend.dm.pageCache.PageCache;
 
 public class PageImpl implements Page {
     private int pageNumber;

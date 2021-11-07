@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import top.guoziyang.mydb.backend.dm.pcache.PageCache;
+import top.guoziyang.mydb.backend.dm.pageCache.PageCache;
 
 public class PageIndex {
     // 将一页划成40个区间
@@ -46,10 +46,10 @@ public class PageIndex {
                 }
                 return lists[number].remove(0);
             }
+            return null;
         } finally {
             lock.unlock();
         }
-        return null;
     }
 
 }

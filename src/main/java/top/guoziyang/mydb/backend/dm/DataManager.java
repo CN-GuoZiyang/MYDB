@@ -3,7 +3,7 @@ package top.guoziyang.mydb.backend.dm;
 import top.guoziyang.mydb.backend.dm.dataItem.DataItem;
 import top.guoziyang.mydb.backend.dm.logger.Logger;
 import top.guoziyang.mydb.backend.dm.page.PageOne;
-import top.guoziyang.mydb.backend.dm.pcache.PageCache;
+import top.guoziyang.mydb.backend.dm.pageCache.PageCache;
 import top.guoziyang.mydb.backend.tm.TransactionManager;
 
 public interface DataManager {

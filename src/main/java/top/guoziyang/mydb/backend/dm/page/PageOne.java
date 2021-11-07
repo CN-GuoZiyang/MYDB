@@ -2,7 +2,7 @@ package top.guoziyang.mydb.backend.dm.page;
 
 import java.util.Arrays;
 
-import top.guoziyang.mydb.backend.dm.pcache.PageCache;
+import top.guoziyang.mydb.backend.dm.pageCache.PageCache;
 import top.guoziyang.mydb.backend.utils.RandomUtil;
 
 /**

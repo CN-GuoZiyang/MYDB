@@ -1,6 +1,7 @@
-package top.guoziyang.mydb.backend.dm.pcache;
+package top.guoziyang.mydb.backend.dm.pageCache;
 
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
@@ -15,6 +16,8 @@ import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.RandomUtil;
 
 public class PageCacheTest {
+
+    static Random random = new SecureRandom();
     
     @Test
     public void testPageCache() throws Exception {
@@ -59,7 +62,7 @@ public class PageCacheTest {
 
     private void worker1(int id) {
         for(int i = 0; i < 80; i ++) {
-            int op = new Random(System.nanoTime()).nextInt(Integer.MAX_VALUE) % 20;
+            int op = Math.abs(random.nextInt() % 20);
             if(op == 0) {
                 byte[] data = RandomUtil.randomBytes(PageCache.PAGE_SIZE);
                 int pgno = pc1.newPage(data);
@@ -76,7 +79,7 @@ public class PageCacheTest {
                 if(mod == 0) {
                     continue;
                 }
-                int pgno = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % mod + 1;
+                int pgno = Math.abs(random.nextInt()) % mod + 1;
                 Page pg = null;
                 try {
                     pg = pc1.getPage(pgno);
@@ -115,7 +118,7 @@ public class PageCacheTest {
 
     private void worker2(int id) {
         for(int i = 0; i < 1000; i ++) {
-            int op = new Random(System.nanoTime()).nextInt(Integer.MAX_VALUE) % 20;
+            int op = Math.abs(random.nextInt() % 20);
             if(op == 0) {
                 // new page
                 byte[] data = RandomUtil.randomBytes(PageCache.PAGE_SIZE);
@@ -129,7 +132,7 @@ public class PageCacheTest {
                 // check
                 int mod = noPages2.intValue();
                 if(mod == 0) continue;
-                int pgno = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % mod + 1;
+                int pgno = Math.abs(random.nextInt()) % mod + 1;
                 Page pg = null, mpg = null;
                 try {
                     pg = pc2.getPage(pgno);
@@ -149,7 +152,7 @@ public class PageCacheTest {
                 // update
                 int mod = noPages2.intValue();
                 if(mod == 0) continue;
-                int pgno = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % mod + 1;
+                int pgno = Math.abs(random.nextInt()) % mod + 1;
                 Page pg = null, mpg = null;
                 try {
                     pg = pc2.getPage(pgno);

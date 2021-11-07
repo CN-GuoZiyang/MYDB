@@ -2,7 +2,7 @@ package top.guoziyang.mydb.backend.dm.pageIndex;
 
 import org.junit.Test;
 
-import top.guoziyang.mydb.backend.dm.pcache.PageCache;
+import top.guoziyang.mydb.backend.dm.pageCache.PageCache;
 
 public class PageIndexTest {
     @Test

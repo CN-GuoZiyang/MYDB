@@ -1,6 +1,7 @@
 package top.guoziyang.mydb.backend.tm;
 
 import java.io.File;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -10,6 +11,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.junit.Test;
 
 public class TransactionManagerTest {
+
+    static Random random = new SecureRandom();
 
     private int transCnt = 0;
     private int noWorkers = 50;
@@ -40,7 +43,7 @@ public class TransactionManagerTest {
         boolean inTrans = false;
         long transXID = 0;
         for(int i = 0; i < noWorks; i ++) {
-            int op = new Random(System.nanoTime()).nextInt(6);
+            int op = Math.abs(random.nextInt(6));
             if(op == 0) {
                 lock.lock();
                 if(inTrans == false) {
@@ -50,7 +53,7 @@ public class TransactionManagerTest {
                     transXID = xid;
                     inTrans = true;
                 } else {
-                    int status = (new Random(System.nanoTime()).nextInt(Integer.MAX_VALUE) % 2) + 1;
+                    int status = (random.nextInt(Integer.MAX_VALUE) % 2) + 1;
                     switch(status) {
                         case 1:
                             tmger.commit(transXID);
@@ -66,7 +69,7 @@ public class TransactionManagerTest {
             } else {
                 lock.lock();
                 if(transCnt > 0) {
-                    long xid = (long)((new Random(System.nanoTime()).nextInt(Integer.MAX_VALUE) % transCnt) + 1);
+                    long xid = (long)((random.nextInt(Integer.MAX_VALUE) % transCnt) + 1);
                     byte status = transMap.get(xid);
                     boolean ok = false;
                     switch (status) {
