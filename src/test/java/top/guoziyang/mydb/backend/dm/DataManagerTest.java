@@ -89,14 +89,13 @@ public class DataManagerTest {
                     data0.release(); data1.release();
                 }
             }
-
         } finally {
             cdl.countDown();
         }
     }
     
     @Test
-    public void TestDMSingle() throws Exception {
+    public void testDMSingle() throws Exception {
         TransactionManager tm0 = new MockTransactionManager();
         DataManager dm0 = DataManager.create("/tmp/TESTDMSingle", PageCache.PAGE_SIZE*10, tm0);
         DataManager mdm = MockDataManager.newMockDataManager();
@@ -107,8 +106,56 @@ public class DataManagerTest {
         Runnable r = () -> worker(dm0, mdm, tasksNum, 50, cdl);
         new Thread(r).run();
         cdl.await();
+        dm0.close(); mdm.close();
 
         new File("/tmp/TESTDMSingle.db").delete();
         new File("/tmp/TESTDMSingle.log").delete();
+    }
+
+    @Test
+    public void testDMMulti() throws InterruptedException {
+        TransactionManager tm0 = new MockTransactionManager();
+        DataManager dm0 = DataManager.create("/tmp/TestDMMulti", PageCache.PAGE_SIZE*10, tm0);
+        DataManager mdm = MockDataManager.newMockDataManager();
+
+        int tasksNum = 500;
+        CountDownLatch cdl = new CountDownLatch(10);
+        initUids();
+        for(int i = 0; i < 10; i ++) {
+            Runnable r = () -> worker(dm0, mdm, tasksNum, 50, cdl);
+            new Thread(r).run();
+        }
+        cdl.await();
+        dm0.close(); mdm.close();
+
+        new File("/tmp/TestDMMulti.db").delete();
+        new File("/tmp/TestDMMulti.log").delete();
+    }
+
+    @Test
+    public void testRecoverySimple() throws InterruptedException {
+        TransactionManager tm0 = TransactionManager.create("/tmp/TestRecoverySimple");
+        DataManager dm0 = DataManager.create("/tmp/TestRecoverySimple", PageCache.PAGE_SIZE*30, tm0);
+        DataManager mdm = MockDataManager.newMockDataManager();
+        dm0.close();
+
+        initUids();
+        int workerNums = 10;
+        for(int i = 0; i < 8; i ++) {
+            dm0 = DataManager.open("/tmp/TestRecoverySimple", PageCache.PAGE_SIZE*10, tm0);
+            CountDownLatch cdl = new CountDownLatch(workerNums);
+            for(int k = 0; k < workerNums; k ++) {
+                final DataManager dm = dm0;
+                Runnable r = () -> worker(dm, mdm, 100, 50, cdl);
+                new Thread(r).run();
+            }
+            cdl.await();
+        }
+        dm0.close(); mdm.close();
+        
+        new File("/tmp/TestRecoverySimple.db").delete();
+        new File("/tmp/TestRecoverySimple.log").delete();
+        new File("/tmp/TestRecoverySimple.xid").delete();
+
     }
 }
