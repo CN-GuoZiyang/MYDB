@@ -13,7 +13,7 @@ public class Transaction {
     public Exception err;
     public boolean autoAborted;
 
-    public static Transaction newTransaction(long xid, int level, Map<Long, Boolean> active) {
+    public static Transaction newTransaction(long xid, int level, Map<Long, Transaction> active) {
         Transaction t = new Transaction();
         t.xid = xid;
         t.level = level;
