@@ -78,7 +78,7 @@ public class Node {
 
     static void copyRawFromKth(SubArray from, SubArray to, int kth) {
         int offset = from.start+NODE_HEADER_SIZE+kth*(8*2);
-        System.arraycopy(from.raw, offset, to, to.start+NODE_HEADER_SIZE, from.end-from.start-offset);
+        System.arraycopy(from.raw, offset, to.raw, to.start+NODE_HEADER_SIZE, from.end-offset);
     }
 
     static void shiftRawKth(SubArray raw, int kth) {
@@ -150,7 +150,6 @@ public class Node {
     public SearchNextRes searchNext(long key) {
         dataItem.rLock();
         try {
-
             SearchNextRes res = new SearchNextRes();
             int noKeys = getRawNoKeys(raw);
             for(int i = 0; i < noKeys; i ++) {
@@ -182,7 +181,9 @@ public class Node {
             int kth = 0;
             while(kth < noKeys) {
                 long ik = getRawKthKey(raw, kth);
-                if(ik >= leftKey) break;
+                if(ik >= leftKey) {
+                    break;
+                }
                 kth ++;
             }
             List<Long> uids = new ArrayList<>();
@@ -227,8 +228,8 @@ public class Node {
             if(needSplit()) {
                 try {
                     SplitRes r = split();
-                    res.newKey = r.newKey;
                     res.newSon = r.newSon;
+                    res.newKey = r.newKey;
                     return res;
                 } catch(Exception e) {
                     err = e;

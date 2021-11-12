@@ -67,7 +67,6 @@ public class BPlusTree {
     private void updateRootUid(long left, long right, long rightKey) throws Exception {
         bootLock.lock();
         try {
-
             byte[] rootRaw = Node.newRootRaw(left, right, rightKey);
             long newRootUid = 0;
             try {
@@ -76,7 +75,8 @@ public class BPlusTree {
                 throw e;
             }
             bootDataItem.before();
-            System.arraycopy(Parser.long2Byte(newRootUid), 0, bootDataItem.data().raw, bootDataItem.data().start, 8);
+            SubArray diRaw = bootDataItem.data();
+            System.arraycopy(Parser.long2Byte(newRootUid), 0, diRaw.raw, diRaw.start, 8);
             bootDataItem.after(TransactionManagerImpl.SUPER_XID);
         } finally {
             bootLock.unlock();
@@ -161,6 +161,7 @@ public class BPlusTree {
         } catch(Exception e) {
             throw e;
         }
+        assert res != null;
         if(res.newNode != 0) {
             try {
                 updateRootUid(rootUid, res.newNode, res.newKey);
@@ -186,7 +187,12 @@ public class BPlusTree {
 
         InsertRes res = null;
         if(isLeaf) {
-            res = insertAndSplit(nodeUid, uid, key);
+            try {
+                res = insertAndSplit(nodeUid, uid, key);
+            } catch(Exception e) {
+                throw e;
+            }
+            assert res != null;
         } else {
             long next = 0;
             try {
@@ -202,8 +208,15 @@ public class BPlusTree {
                 throw e;
             }
             if(ir.newNode != 0) {
-                res = insertAndSplit(nodeUid, ir.newNode, ir.newKey);
+                try {
+                    res = insertAndSplit(nodeUid, ir.newNode, ir.newKey);
+                } catch(Exception e) {
+                    throw e;
+                }
+            } else {
+                res = new InsertRes();
             }
+            assert res != null;
         }
         return res;
     }
