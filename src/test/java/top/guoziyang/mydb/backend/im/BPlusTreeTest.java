@@ -24,12 +24,11 @@ public class BPlusTreeTest {
             tree.insert(i, i);
         }
 
-        tree.search(9008);
-        // for(int i = 0; i < lim; i ++) {
-        //     List<Long> uids = tree.search(i);
-        //     assert uids.size() == 1;
-        //     assert uids.get(0) == i;
-        // }
+        for(int i = 0; i < lim; i ++) {
+            List<Long> uids = tree.search(i);
+            assert uids.size() == 1;
+            assert uids.get(0) == i;
+        }
 
         assert new File("/tmp/TestTreeSingle.db").delete();
         assert new File("/tmp/TestTreeSingle.log").delete();

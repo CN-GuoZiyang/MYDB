@@ -98,7 +98,7 @@ public class Node {
         setRawKthSon(raw, left, 0);
         setRawKthKey(raw, key, 0);
         setRawKthSon(raw, right, 1);
-        setRawKthKey(raw, -1, 1);
+        setRawKthKey(raw, Long.MAX_VALUE, 1);
 
         return raw.raw;
     }
@@ -303,6 +303,19 @@ public class Node {
         res.newSon = son;
         res.newKey = getRawKthKey(nodeRaw, 0);
         return res;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Is leaf: ").append(getRawIfLeaf(raw)).append("\n");
+        int KeyNumber = getRawNoKeys(raw);
+        sb.append("KeyNumber: ").append(KeyNumber).append("\n");
+        sb.append("sibling: ").append(getRawSibling(raw)).append("\n");
+        for(int i = 0; i < KeyNumber; i ++) {
+            sb.append("son: ").append(getRawKthSon(raw, i)).append(", key: ").append(getRawKthKey(raw, i)).append("\n");
+        }
+        return sb.toString();
     }
 
 }
