@@ -50,13 +50,7 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     }
 
     public Page getPage(int pgno) throws Exception {
-        Page pg;
-        try {
-            pg = get((long)pgno);
-        } catch (Exception e) {
-            throw e;
-        }
-        return pg;
+        return get((long)pgno);
     }
 
     /**

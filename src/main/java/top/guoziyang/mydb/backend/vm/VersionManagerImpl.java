@@ -43,7 +43,7 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
         try {
             entry = super.get(uid);
         } catch(Exception e) {
-            if("null entry".equals(e.getMessage())) {
+            if(e == Error.NullEntryException) {
                 return null;
             } else {
                 throw e;
@@ -87,14 +87,13 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
         try {
             entry = super.get(uid);
         } catch(Exception e) {
-            if("null entry".equals(e.getMessage())) {
+            if(e == Error.NullEntryException) {
                 return false;
             } else {
                 throw e;
             }
         }
         try {
-
             if(!Visibility.isVisible(tm, t, entry)) {
                 return false;
             }
@@ -184,12 +183,7 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
 
     @Override
     protected Entry getForCache(long uid) throws Exception {
-        Entry entry = null;
-        try {
-            entry = Entry.loadEntry(this, uid);
-        } catch(Exception e) {
-            throw e;
-        }
+        Entry entry = Entry.loadEntry(this, uid);
         if(entry == null) {
             throw Error.NullEntryException;
         }

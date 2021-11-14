@@ -38,7 +38,6 @@ public class LockTable {
     public Lock add(long xid, long uid) throws Exception {
         lock.lock();
         try {
-
             if(isInList(x2u, xid, uid)) {
                 return null;
             }
@@ -67,7 +66,6 @@ public class LockTable {
     public void remove(long xid) {
         lock.lock();
         try {
-            
             List<Long> l = x2u.get(xid);
             if(l != null) {
                 while(l.size() > 0) {
