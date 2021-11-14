@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 
+import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.dm.page.Page;
 import top.guoziyang.mydb.backend.utils.Panic;
 
@@ -25,13 +26,13 @@ public interface PageCache {
         File f = new File(path+PageCacheImpl.DB_SUFFIX);
         try {
             if(!f.createNewFile()) {
-                Panic.panic(new RuntimeException("File already exists!"));
+                Panic.panic(Error.FileExistsException);
             }
         } catch (Exception e) {
             Panic.panic(e);
         }
         if(!f.canRead() || !f.canWrite()) {
-            Panic.panic(new RuntimeException("File cannot read or write"));
+            Panic.panic(Error.FileCannotRWException);
         }
 
         FileChannel fc = null;
@@ -48,10 +49,10 @@ public interface PageCache {
     public static PageCacheImpl open(String path, long memory) {
         File f = new File(path+PageCacheImpl.DB_SUFFIX);
         if(!f.exists()) {
-            Panic.panic(new RuntimeException("File does not exists!"));
+            Panic.panic(Error.FileNotExistsException);
         }
         if(!f.canRead() || !f.canWrite()) {
-            Panic.panic(new RuntimeException("File cannot read or write"));
+            Panic.panic(Error.FileCannotRWException);
         }
 
         FileChannel fc = null;

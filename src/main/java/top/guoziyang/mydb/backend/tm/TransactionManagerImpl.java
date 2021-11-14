@@ -7,6 +7,7 @@ import java.nio.channels.FileChannel;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.Parser;
 
@@ -48,10 +49,10 @@ public class TransactionManagerImpl implements TransactionManager {
         try {
             fileLen = file.length();
         } catch (IOException e1) {
-            Panic.panic(new RuntimeException("Bad XID file"));
+            Panic.panic(Error.BadXIDFileException);
         }
         if(fileLen < LEN_XID_HEADER_LENGTH) {
-            Panic.panic(new RuntimeException("Bad XID file"));
+            Panic.panic(Error.BadXIDFileException);
         }
 
         ByteBuffer buf = ByteBuffer.allocate(LEN_XID_HEADER_LENGTH);
@@ -64,7 +65,7 @@ public class TransactionManagerImpl implements TransactionManager {
         this.xidCounter = Parser.parseLong(buf.array());
         long end = getXidPosition(this.xidCounter + 1);
         if(end != fileLen) {
-            Panic.panic(new RuntimeException("Bad XID file"));
+            Panic.panic(Error.BadXIDFileException);
         }
     }
 

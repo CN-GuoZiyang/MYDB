@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.utils.Panic;
 
 public interface TransactionManager {
@@ -22,13 +23,13 @@ public interface TransactionManager {
         File f = new File(path+TransactionManagerImpl.XID_SUFFIX);
         try {
             if(!f.createNewFile()) {
-                Panic.panic(new RuntimeException("File already exists!"));
+                Panic.panic(Error.FileExistsException);
             }
         } catch (Exception e) {
             Panic.panic(e);
         }
         if(!f.canRead() || !f.canWrite()) {
-            Panic.panic(new RuntimeException("File cannot read or write"));
+            Panic.panic(Error.FileCannotRWException);
         }
 
         FileChannel fc = null;
@@ -55,10 +56,10 @@ public interface TransactionManager {
     public static TransactionManagerImpl open(String path) {
         File f = new File(path+TransactionManagerImpl.XID_SUFFIX);
         if(!f.exists()) {
-            Panic.panic(new RuntimeException("File does not exists!"));
+            Panic.panic(Error.FileNotExistsException);
         }
         if(!f.canRead() || !f.canWrite()) {
-            Panic.panic(new RuntimeException("File cannot read or write"));
+            Panic.panic(Error.FileCannotRWException);
         }
 
         FileChannel fc = null;

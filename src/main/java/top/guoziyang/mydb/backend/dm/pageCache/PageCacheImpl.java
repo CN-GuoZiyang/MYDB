@@ -9,6 +9,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import top.guoziyang.mydb.backend.common.AbstractCache;
+import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.dm.page.Page;
 import top.guoziyang.mydb.backend.dm.page.PageImpl;
 import top.guoziyang.mydb.backend.utils.Panic;
@@ -27,7 +28,7 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     PageCacheImpl(RandomAccessFile file, FileChannel fileChannel, int maxResource) {
         super(maxResource);
         if(maxResource < MEM_MIN_LIM) {
-            Panic.panic(new RuntimeException("Memory too small!"));
+            Panic.panic(Error.MemTooSmallException);
         }
         long length = 0;
         try {

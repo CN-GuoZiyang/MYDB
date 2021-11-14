@@ -51,7 +51,7 @@ public abstract class AbstractCache<T> {
             // 尝试获取该资源
             if(maxResource > 0 && count == maxResource) {
                 lock.unlock();
-                throw new RuntimeException("Cache is full!");
+                throw Error.CacheFullException;
             }
             count ++;
             getting.put(key, true);

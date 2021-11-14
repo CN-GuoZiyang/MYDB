@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import top.guoziyang.mydb.backend.common.Error;
+
 /**
  * 维护了一个依赖等待图，以进行死锁检测
  */
@@ -50,7 +52,7 @@ public class LockTable {
             if(hasDeadLock()) {
                 waitU.remove(xid);
                 removeFromList(wait, uid, xid);
-                throw new RuntimeException("Deadlock");
+                throw Error.DeadlockException;
             }
             Lock l = new ReentrantLock();
             l.lock();

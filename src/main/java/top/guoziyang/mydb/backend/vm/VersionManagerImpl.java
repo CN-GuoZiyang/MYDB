@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import top.guoziyang.mydb.backend.common.AbstractCache;
+import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.dm.DataManager;
 import top.guoziyang.mydb.backend.tm.TransactionManager;
 import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
@@ -101,7 +102,7 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
             try {
                 l = lt.add(xid, uid);
             } catch(Exception e) {
-                t.err = new RuntimeException("concurrent update issue!");
+                t.err = Error.ConcurrentUpdateException;
                 internAbort(xid, true);
                 t.autoAborted = true;
                 throw t.err;
@@ -114,7 +115,7 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
             }
 
             if(Visibility.isVersionSkip(tm, t, entry)) {
-                t.err = new RuntimeException("concurrent update issue!");
+                t.err = Error.ConcurrentUpdateException;
                 internAbort(xid, true);
                 t.autoAborted = true;
                 throw t.err;
@@ -190,7 +191,7 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
             throw e;
         }
         if(entry == null) {
-            throw new RuntimeException("null entry");
+            throw Error.NullEntryException;
         }
         return entry;
     }

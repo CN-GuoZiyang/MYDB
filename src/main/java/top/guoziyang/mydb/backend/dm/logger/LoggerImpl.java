@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.google.common.primitives.Bytes;
 
+import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.Parser;
 
@@ -64,7 +65,7 @@ public class LoggerImpl implements Logger {
             Panic.panic(e);
         }
         if(size < 4) {
-            Panic.panic(new RuntimeException("Bad log file"));
+            Panic.panic(Error.BadLogFileException);
         }
 
         ByteBuffer raw = ByteBuffer.allocate(4);
@@ -92,7 +93,7 @@ public class LoggerImpl implements Logger {
             xCheck = calChecksum(xCheck, log);
         }
         if(xCheck != xChecksum) {
-            Panic.panic(new RuntimeException("Bad log file"));
+            Panic.panic(Error.BadLogFileException);
         }
 
         try {

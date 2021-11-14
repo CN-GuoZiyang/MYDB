@@ -1,6 +1,7 @@
 package top.guoziyang.mydb.backend.dm;
 
 import top.guoziyang.mydb.backend.common.AbstractCache;
+import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.dm.dataItem.DataItem;
 import top.guoziyang.mydb.backend.dm.dataItem.DataItemImpl;
 import top.guoziyang.mydb.backend.dm.logger.Logger;
@@ -49,7 +50,7 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
     public long insert(long xid, byte[] data) throws Exception {
         byte[] raw = DataItem.wrapDataItemRaw(data);
         if(raw.length > PageX.MAX_FREE_SPACE) {
-            throw new RuntimeException("Data too large");
+            throw Error.DataTooLargeException;
         }
 
         PageInfo pi = null;
@@ -63,7 +64,7 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
             }
         }
         if(pi == null) {
-            throw new RuntimeException("Database is busy");
+            throw Error.DatabaseBusyException;
         }
 
         Page pg = null;

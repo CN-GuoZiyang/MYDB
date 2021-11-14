@@ -37,7 +37,7 @@ public class CacheTest {
             try {
                 h = cache.get(uid);
             } catch (Exception e) {
-                if(e.getMessage().equals("Cache is full!")) continue;
+                if(e == Error.CacheFullException) continue;
                 Panic.panic(e);
             }
             assert h == uid;
