@@ -19,7 +19,7 @@ import top.guoziyang.mydb.backend.utils.Parser;
  * 如果field无索引，IndexUid为0
  */
 public class Field {
-    private long uid;
+    long uid;
     private Table tb;
     private String fieldName;
     private String fieldType;
