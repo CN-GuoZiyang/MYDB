@@ -1,6 +1,7 @@
 package top.guoziyang.mydb.backend.parser.statement;
 
-public class Delete {
+public class Read {
     public String tableName;
+    public String[] fields;
     public Where where;
 }

@@ -21,8 +21,8 @@ import top.guoziyang.mydb.backend.utils.Parser;
 public class Field {
     long uid;
     private Table tb;
-    private String fieldName;
-    private String fieldType;
+    String fieldName;
+    String fieldType;
     private long index;
     private BPlusTree bt;
 
@@ -105,6 +105,18 @@ public class Field {
 
     public List<Long> search(long left, long right) throws Exception {
         return bt.searchRange(left, right);
+    }
+
+    public Object string2Value(String str) {
+        switch(fieldType) {
+            case "int32":
+                return Integer.parseInt(str);
+            case "int64":
+                return Long.parseLong(str);
+            case "string":
+                return str;
+        }
+        return null;
     }
 
     public long value2Uid(Object key) {

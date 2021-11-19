@@ -23,4 +23,5 @@ public class Error {
 
     // tbm
     public static final Exception InvalidFieldException = new RuntimeException("Invalid field type!");
+    public static final Exception FieldNotFoundException = new RuntimeException("Field not found!");
 }

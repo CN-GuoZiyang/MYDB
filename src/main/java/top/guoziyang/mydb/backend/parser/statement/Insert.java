@@ -1,6 +1,6 @@
 package top.guoziyang.mydb.backend.parser.statement;
 
-public class Delete {
+public class Insert {
     public String tableName;
-    public Where where;
+    public String[] values;
 }
