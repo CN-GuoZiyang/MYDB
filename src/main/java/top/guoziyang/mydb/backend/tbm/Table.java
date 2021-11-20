@@ -2,6 +2,7 @@ package top.guoziyang.mydb.backend.tbm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,9 +11,11 @@ import com.google.common.primitives.Bytes;
 import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.parser.statement.Create;
 import top.guoziyang.mydb.backend.parser.statement.Delete;
+import top.guoziyang.mydb.backend.parser.statement.Insert;
 import top.guoziyang.mydb.backend.parser.statement.Read;
 import top.guoziyang.mydb.backend.parser.statement.Update;
 import top.guoziyang.mydb.backend.parser.statement.Where;
+import top.guoziyang.mydb.backend.tbm.Field.ParseValueRes;
 import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
 import top.guoziyang.mydb.backend.utils.ParseStringRes;
 import top.guoziyang.mydb.backend.utils.Parser;
@@ -105,7 +108,7 @@ public class Table {
         return count;
     }
 
-    public int Update(long xid, Update update) throws Exception {
+    public int update(long xid, Update update) throws Exception {
         List<Long> uids = parseWhere(update.where);
         Field fd = null;
         for (Field f : fields) {
@@ -153,16 +156,128 @@ public class Table {
         return sb.toString();
     }
 
+    public void insert(long xid, Insert insert) throws Exception {
+        Map<String, Object> entry = string2Entry(insert.values);
+        byte[] raw = entry2Raw(entry);
+        long uid = ((TableManagerImpl)tbm).vm.insert(xid, raw);
+        for (Field field : fields) {
+            if(field.isIndexed()) {
+                field.insert(entry.get(field.fieldName), uid);
+            }
+        }
+    }
+
+    private Map<String, Object> string2Entry(String[] values) throws Exception {
+        if(values.length != fields.size()) {
+            throw Error.InvalidValuesException;
+        }
+        Map<String, Object> entry = new HashMap<>();
+        for (int i = 0; i < fields.size(); i++) {
+            Field f = fields.get(i);
+            Object v = f.string2Value(values[i]);
+            entry.put(f.fieldName, v);
+        }
+        return entry;
+    }
+
     private List<Long> parseWhere(Where where) throws Exception {
-        return null;
+        long l0=0, r0=0, l1=0, r1=0;
+        boolean single = false;
+        Field fd = null;
+        if(where == null) {
+            for (Field field : fields) {
+                if(field.isIndexed()) {
+                    fd = field;
+                    break;
+                }
+            }
+            l0 = 0;
+            r0 = Long.MAX_VALUE;
+            single = true;
+        } else {
+            for (Field field : fields) {
+                if(field.fieldName.equals(where.singleExp1.field)) {
+                    if(!field.isIndexed()) {
+                        throw Error.FieldNotIndexedException;
+                    }
+                    fd = field;
+                    break;
+                }
+            }
+            if(fd == null) {
+                throw Error.FieldNotFoundException;
+            }
+            CalWhereRes res = calWhere(fd, where);
+            l0 = res.l0; r0 = res.r0;
+            l1 = res.l1; r1 = res.r1;
+            single = res.single;
+        }
+        List<Long> uids = fd.search(l0, r0);
+        if(!single) {
+            List<Long> tmp = fd.search(l1, r1);
+            uids.addAll(tmp);
+        }
+        return uids;
+    }
+
+    class CalWhereRes {
+        long l0, r0, l1, r1;
+        boolean single;
+    }
+
+    private CalWhereRes calWhere(Field fd, Where where) throws Exception {
+        CalWhereRes res = new CalWhereRes();
+        switch(where.logicOp) {
+            case "":
+                res.single = true;
+                FieldCalRes r = fd.calExp(where.singleExp1);
+                res.l0 = r.left; res.r0 = r.right;
+                break;
+            case "or":
+                res.single = false;
+                r = fd.calExp(where.singleExp1);
+                res.l0 = r.left; res.r0 = r.right;
+                r = fd.calExp(where.singleExp2);
+                res.l1 = r.left; res.r1 = r.right;
+                break;
+            case "and":
+                res.single = true;
+                r = fd.calExp(where.singleExp1);
+                res.l0 = r.left; res.r0 = r.right;
+                r = fd.calExp(where.singleExp2);
+                res.l1 = r.left; res.r1 = r.right;
+                if(res.l1 > res.l0) res.l0 = res.l1;
+                if(res.r1 < res.r0) res.r0 = res.r1;
+                break;
+            default:
+                throw Error.InvalidLogOpException;
+        }
+        return res;
     }
 
     private String printEntry(Map<String, Object> entry) {
-        return null;
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < fields.size(); i++) {
+            Field field = fields.get(i);
+            sb.append(field.printValue(entry.get(field.fieldName)));
+            if(i == fields.size()-1) {
+                sb.append("]");
+            } else {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
     }
 
     private Map<String, Object> parseEntry(byte[] raw) {
-        return null;
+        int pos = 0;
+        Map<String, Object> entry = new HashMap<>();
+        for (Field field : fields) {
+            ParseValueRes r = field.parserValue(Arrays.copyOf(raw, pos));
+            entry.put(field.fieldName, r.v);
+            pos += r.shift;
+        }
+        return entry;
     }
 
     private byte[] entry2Raw(Map<String, Object> entry) {

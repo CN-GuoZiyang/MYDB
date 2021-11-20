@@ -7,6 +7,7 @@ import com.google.common.primitives.Bytes;
 
 import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.im.BPlusTree;
+import top.guoziyang.mydb.backend.parser.statement.SingleExpression;
 import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
 import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.ParseStringRes;
@@ -198,5 +199,31 @@ public class Field {
             .append(index!=0?", Index":", NoIndex")
             .append(")")
             .toString();
+    }
+
+    public FieldCalRes calExp(SingleExpression exp) throws Exception {
+        Object v = null;
+        FieldCalRes res = new FieldCalRes();
+        switch(exp.compareOp) {
+            case "<":
+                res.left = 0;
+                v = string2Value(exp.value);
+                res.right = value2Uid(v);
+                if(res.right > 0) {
+                    res.right --;
+                }
+                break;
+            case "=":
+                v = string2Value(exp.value);
+                res.left = value2Uid(v);
+                res.right = res.left;
+                break;
+            case ">":
+                res.right = Long.MAX_VALUE;
+                v = string2Value(exp.value);
+                res.left = value2Uid(v) + 1;
+                break;
+        }
+        return res;
     }
 }
