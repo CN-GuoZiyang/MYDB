@@ -17,6 +17,7 @@ import top.guoziyang.mydb.backend.parser.statement.Update;
 import top.guoziyang.mydb.backend.parser.statement.Where;
 import top.guoziyang.mydb.backend.tbm.Field.ParseValueRes;
 import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
+import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.ParseStringRes;
 import top.guoziyang.mydb.backend.utils.Parser;
 
@@ -34,8 +35,13 @@ public class Table {
     long nextUid;
     List<Field> fields = new ArrayList<>();
 
-    public static Table loadTable(TableManager tbm, long uid) throws Exception {
-        byte[] raw = ((TableManagerImpl)tbm).vm.read(TransactionManagerImpl.SUPER_XID, uid);
+    public static Table loadTable(TableManager tbm, long uid) {
+        byte[] raw = null;
+        try {
+            raw = ((TableManagerImpl)tbm).vm.read(TransactionManagerImpl.SUPER_XID, uid);
+        } catch (Exception e) {
+            Panic.panic(e);
+        }
         assert raw != null;
         Table tb = new Table(tbm, uid);
         return tb.parseSelf(raw);
