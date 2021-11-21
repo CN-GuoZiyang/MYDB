@@ -22,15 +22,13 @@ public class LockTable {
     private Map<Long, Long> waitU;      // XID正在等待的UID
     private Lock lock;
 
-    public static LockTable newLockTable() {
-        LockTable lt = new LockTable();
-        lt.x2u = new HashMap<>();
-        lt.u2x = new HashMap<>();
-        lt.wait = new HashMap<>();
-        lt.waitLock = new HashMap<>();
-        lt.waitU = new HashMap<>();
-        lt.lock = new ReentrantLock();
-        return lt;
+    public LockTable() {
+        x2u = new HashMap<>();
+        u2x = new HashMap<>();
+        wait = new HashMap<>();
+        waitLock = new HashMap<>();
+        waitU = new HashMap<>();
+        lock = new ReentrantLock();
     }
 
     // 不需要等待则返回null，否则返回锁对象

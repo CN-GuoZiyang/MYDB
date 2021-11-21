@@ -4,7 +4,7 @@ public class Package {
     byte[] data;
     Exception err;
 
-    Package(byte[] data, Exception err) {
+    public Package(byte[] data, Exception err) {
         this.data = data;
         this.err = err;
     }

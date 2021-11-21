@@ -74,7 +74,7 @@ public class Field {
         Field f = new Field(tb, fieldName, fieldType, 0);
         if(indexed) {
             long index = BPlusTree.create(((TableManagerImpl)tb.tbm).dm);
-            BPlusTree bt = BPlusTree.load(f.index, ((TableManagerImpl)tb.tbm).dm);
+            BPlusTree bt = BPlusTree.load(index, ((TableManagerImpl)tb.tbm).dm);
             f.index = index;
             f.bt = bt;
         }
@@ -126,7 +126,10 @@ public class Field {
             case "string":
                 uid = Parser.str2Uid((String)key);
                 break;
-            default:
+            case "int32":
+                int uint = (int)key;
+                return (long)uint;
+            case "int64":
                 uid = (long)key;
                 break;
         }

@@ -12,7 +12,7 @@ public class LockTableTest {
 
     @Test
     public void testLockTable() {
-        LockTable lt = LockTable.newLockTable();
+        LockTable lt = new LockTable();
         try {
             lt.add(1, 1);
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class LockTableTest {
 
     @Test
     public void testLockTable2() {
-        LockTable lt = LockTable.newLockTable();
+        LockTable lt = new LockTable();
         for(long i = 1; i <= 100; i ++) {
             try {
                 Lock o = lt.add(i, i);

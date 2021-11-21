@@ -9,6 +9,7 @@ import top.guoziyang.mydb.backend.common.AbstractCache;
 import top.guoziyang.mydb.backend.dm.DataManager;
 import top.guoziyang.mydb.backend.tm.TransactionManager;
 import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
+import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.common.Error;
 
 public class VersionManagerImpl extends AbstractCache<Entry> implements VersionManager {
@@ -147,8 +148,14 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
         Transaction t = activeTransaction.get(xid);
         lock.unlock();
 
-        if(t.err != null) {
-            throw t.err;
+        try {
+            if(t.err != null) {
+                throw t.err;
+            }
+        } catch(NullPointerException n) {
+            System.out.println(xid);
+            System.out.println(activeTransaction.keySet());
+            Panic.panic(n);
         }
 
         lock.lock();

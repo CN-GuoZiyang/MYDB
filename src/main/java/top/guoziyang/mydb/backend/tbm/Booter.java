@@ -65,6 +65,11 @@ public class Booter {
 
     public void update(byte[] data) {
         File tmp = new File(path + BOOTER_TMP_SUFFIX);
+        try {
+            tmp.createNewFile();
+        } catch (Exception e) {
+            Panic.panic(e);
+        }
         if(!tmp.canRead() || !tmp.canWrite()) {
             Panic.panic(Error.FileCannotRWException);
         }

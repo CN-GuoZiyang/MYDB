@@ -96,7 +96,7 @@ public class Tokenizer {
         StringBuilder sb = new StringBuilder();
         while(true) {
             Byte b = peekByte();
-            if(b == null || !(isAlphaBeta(b) || isDigit(b))) {
+            if(b == null || !(isAlphaBeta(b) || isDigit(b) || b == '_')) {
                 if(b != null && isBlank(b)) {
                     popByte();
                 }
