@@ -1,6 +1,6 @@
 package top.guoziyang.mydb.backend.parser;
 
-import top.guoziyang.mydb.backend.common.Error;
+import top.guoziyang.mydb.common.Error;
 
 public class Tokenizer {
     private byte[] stat;

@@ -1,7 +1,6 @@
 package top.guoziyang.mydb.backend.dm;
 
 import top.guoziyang.mydb.backend.common.AbstractCache;
-import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.dm.dataItem.DataItem;
 import top.guoziyang.mydb.backend.dm.dataItem.DataItemImpl;
 import top.guoziyang.mydb.backend.dm.logger.Logger;
@@ -14,6 +13,7 @@ import top.guoziyang.mydb.backend.dm.pageIndex.PageInfo;
 import top.guoziyang.mydb.backend.tm.TransactionManager;
 import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.Types;
+import top.guoziyang.mydb.common.Error;
 
 public class DataManagerImpl extends AbstractCache<DataItem> implements DataManager {
 

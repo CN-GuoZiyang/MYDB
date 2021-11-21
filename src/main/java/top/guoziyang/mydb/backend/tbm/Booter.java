@@ -5,8 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.utils.Panic;
+import top.guoziyang.mydb.common.Error;
 
 // 记录第一个表的uid
 public class Booter {

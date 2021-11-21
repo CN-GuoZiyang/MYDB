@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.google.common.primitives.Bytes;
 
-import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.parser.statement.Create;
 import top.guoziyang.mydb.backend.parser.statement.Delete;
 import top.guoziyang.mydb.backend.parser.statement.Insert;
@@ -20,6 +19,7 @@ import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
 import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.utils.ParseStringRes;
 import top.guoziyang.mydb.backend.utils.Parser;
+import top.guoziyang.mydb.common.Error;
 
 /**
  * Table 维护了表结构
@@ -279,7 +279,7 @@ public class Table {
         int pos = 0;
         Map<String, Object> entry = new HashMap<>();
         for (Field field : fields) {
-            ParseValueRes r = field.parserValue(Arrays.copyOf(raw, pos));
+            ParseValueRes r = field.parserValue(Arrays.copyOfRange(raw, pos, raw.length));
             entry.put(field.fieldName, r.v);
             pos += r.shift;
         }

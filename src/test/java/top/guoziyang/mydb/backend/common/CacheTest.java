@@ -7,6 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Test;
 
 import top.guoziyang.mydb.backend.utils.Panic;
+import top.guoziyang.mydb.common.Error;
 
 public class CacheTest {
 

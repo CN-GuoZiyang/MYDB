@@ -3,7 +3,6 @@ package top.guoziyang.mydb.backend.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.parser.statement.Abort;
 import top.guoziyang.mydb.backend.parser.statement.Begin;
 import top.guoziyang.mydb.backend.parser.statement.Commit;
@@ -16,6 +15,7 @@ import top.guoziyang.mydb.backend.parser.statement.Show;
 import top.guoziyang.mydb.backend.parser.statement.SingleExpression;
 import top.guoziyang.mydb.backend.parser.statement.Update;
 import top.guoziyang.mydb.backend.parser.statement.Where;
+import top.guoziyang.mydb.common.Error;
 
 public class Parser {
     public static Object Parse(byte[] statement) throws Exception {

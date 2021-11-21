@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.dm.DataManager;
 import top.guoziyang.mydb.backend.parser.statement.Begin;
 import top.guoziyang.mydb.backend.parser.statement.Create;
@@ -17,6 +16,7 @@ import top.guoziyang.mydb.backend.parser.statement.Read;
 import top.guoziyang.mydb.backend.parser.statement.Update;
 import top.guoziyang.mydb.backend.utils.Parser;
 import top.guoziyang.mydb.backend.vm.VersionManager;
+import top.guoziyang.mydb.common.Error;
 
 public class TableManagerImpl implements TableManager {
     VersionManager vm;

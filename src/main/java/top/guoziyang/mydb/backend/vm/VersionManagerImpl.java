@@ -6,10 +6,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import top.guoziyang.mydb.backend.common.AbstractCache;
-import top.guoziyang.mydb.backend.common.Error;
 import top.guoziyang.mydb.backend.dm.DataManager;
 import top.guoziyang.mydb.backend.tm.TransactionManager;
 import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
+import top.guoziyang.mydb.common.Error;
 
 public class VersionManagerImpl extends AbstractCache<Entry> implements VersionManager {
 

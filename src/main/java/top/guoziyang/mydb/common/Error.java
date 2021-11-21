@@ -1,4 +1,4 @@
-package top.guoziyang.mydb.backend.common;
+package top.guoziyang.mydb.common;
 
 public class Error {
     // common
@@ -33,4 +33,7 @@ public class Error {
     // parser
     public static final Exception InvalidCommandException = new RuntimeException("Invalid command!");
     public static final Exception TableNoIndexException = new RuntimeException("Table has no index!");
+
+    // transport
+    public static final Exception InvalidPkgDataException = new RuntimeException("Invalid package data!");
 }
