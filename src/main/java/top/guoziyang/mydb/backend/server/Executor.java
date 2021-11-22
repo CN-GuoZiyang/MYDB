@@ -7,7 +7,7 @@ import top.guoziyang.mydb.backend.parser.statement.Commit;
 import top.guoziyang.mydb.backend.parser.statement.Create;
 import top.guoziyang.mydb.backend.parser.statement.Delete;
 import top.guoziyang.mydb.backend.parser.statement.Insert;
-import top.guoziyang.mydb.backend.parser.statement.Read;
+import top.guoziyang.mydb.backend.parser.statement.Select;
 import top.guoziyang.mydb.backend.parser.statement.Show;
 import top.guoziyang.mydb.backend.parser.statement.Update;
 import top.guoziyang.mydb.backend.tbm.BeginRes;
@@ -73,8 +73,8 @@ public class Executor {
                 res = tbm.show(xid);
             } else if(Create.class.isInstance(stat)) {
                 res = tbm.create(xid, (Create)stat);
-            } else if(Read.class.isInstance(stat)) {
-                res = tbm.read(xid, (Read)stat);
+            } else if(Select.class.isInstance(stat)) {
+                res = tbm.read(xid, (Select)stat);
             } else if(Insert.class.isInstance(stat)) {
                 res = tbm.insert(xid, (Insert)stat);
             } else if(Delete.class.isInstance(stat)) {

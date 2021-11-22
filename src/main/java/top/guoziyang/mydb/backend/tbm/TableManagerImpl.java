@@ -12,7 +12,7 @@ import top.guoziyang.mydb.backend.parser.statement.Begin;
 import top.guoziyang.mydb.backend.parser.statement.Create;
 import top.guoziyang.mydb.backend.parser.statement.Delete;
 import top.guoziyang.mydb.backend.parser.statement.Insert;
-import top.guoziyang.mydb.backend.parser.statement.Read;
+import top.guoziyang.mydb.backend.parser.statement.Select;
 import top.guoziyang.mydb.backend.parser.statement.Update;
 import top.guoziyang.mydb.backend.utils.Parser;
 import top.guoziyang.mydb.backend.vm.VersionManager;
@@ -121,7 +121,7 @@ public class TableManagerImpl implements TableManager {
         return "insert".getBytes();
     }
     @Override
-    public byte[] read(long xid, Read read) throws Exception {
+    public byte[] read(long xid, Select read) throws Exception {
         lock.lock();
         Table table = tableCache.get(read.tableName);
         lock.unlock();

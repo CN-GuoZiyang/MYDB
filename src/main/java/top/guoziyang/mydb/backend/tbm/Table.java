@@ -11,7 +11,7 @@ import com.google.common.primitives.Bytes;
 import top.guoziyang.mydb.backend.parser.statement.Create;
 import top.guoziyang.mydb.backend.parser.statement.Delete;
 import top.guoziyang.mydb.backend.parser.statement.Insert;
-import top.guoziyang.mydb.backend.parser.statement.Read;
+import top.guoziyang.mydb.backend.parser.statement.Select;
 import top.guoziyang.mydb.backend.parser.statement.Update;
 import top.guoziyang.mydb.backend.parser.statement.Where;
 import top.guoziyang.mydb.backend.tbm.Field.ParseValueRes;
@@ -150,7 +150,7 @@ public class Table {
         return count;
     }
 
-    public String read(long xid, Read read) throws Exception {
+    public String read(long xid, Select read) throws Exception {
         List<Long> uids = parseWhere(read.where);
         StringBuilder sb = new StringBuilder();
         for (Long uid : uids) {

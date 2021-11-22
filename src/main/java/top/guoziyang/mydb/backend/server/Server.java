@@ -33,19 +33,18 @@ public class Server {
         }
         System.out.println("Server listen to port: " + port);
         ThreadPoolExecutor tpe = new ThreadPoolExecutor(10, 20, 1L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.CallerRunsPolicy());
-        while(true) {
-            try {
+        try {
+            while(true) {
                 Socket socket = ss.accept();
                 Runnable worker = new HandleSocket(socket, tbm);
                 tpe.execute(worker);
-            } catch(IOException e) {
-                e.printStackTrace();
-                continue;
-            } finally {
-                try {
-                    ss.close();
-                } catch (IOException e) {}
             }
+        } catch(IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ss.close();
+            } catch (IOException ignored) {}
         }
     }
 }

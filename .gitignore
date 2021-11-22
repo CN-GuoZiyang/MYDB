@@ -13,3 +13,4 @@ buildNumber.properties
 .project
 .classpath
 .vscode/
+.idea/

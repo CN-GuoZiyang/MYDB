@@ -10,7 +10,7 @@ import top.guoziyang.mydb.backend.parser.statement.Create;
 import top.guoziyang.mydb.backend.parser.statement.Delete;
 import top.guoziyang.mydb.backend.parser.statement.Drop;
 import top.guoziyang.mydb.backend.parser.statement.Insert;
-import top.guoziyang.mydb.backend.parser.statement.Read;
+import top.guoziyang.mydb.backend.parser.statement.Select;
 import top.guoziyang.mydb.backend.parser.statement.Show;
 import top.guoziyang.mydb.backend.parser.statement.SingleExpression;
 import top.guoziyang.mydb.backend.parser.statement.Update;
@@ -42,8 +42,8 @@ public class Parser {
                 case "drop":
                     stat = parseDrop(tokenizer);
                     break;
-                case "read":
-                    stat = parseRead(tokenizer);
+                case "select":
+                    stat = parseSelect(tokenizer);
                     break;
                 case "insert":
                     stat = parseInsert(tokenizer);
@@ -172,8 +172,8 @@ public class Parser {
         return insert;
     }
 
-    private static Read parseRead(Tokenizer tokenizer) throws Exception {
-        Read read = new Read();
+    private static Select parseSelect(Tokenizer tokenizer) throws Exception {
+        Select read = new Select();
 
         List<String> fields = new ArrayList<>();
         String asterisk = tokenizer.peek();

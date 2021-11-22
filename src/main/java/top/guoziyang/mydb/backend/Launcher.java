@@ -17,7 +17,7 @@ import top.guoziyang.mydb.common.Error;
 
 public class Launcher {
 
-    public static final int port = 8080;
+    public static final int port = 9999;
 
     public static final long DEFALUT_MEM = (1<<20)*64;
     public static final long KB = 1 << 10;
@@ -26,9 +26,9 @@ public class Launcher {
 
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
-        options.addOption("open", false, "-open DBPath");
-        options.addOption("create", false, "-create DBPath");
-        options.addOption("mem", false, "-mem 64MB");
+        options.addOption("open", true, "-open DBPath");
+        options.addOption("create", true, "-create DBPath");
+        options.addOption("mem", true, "-mem 64MB");
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options,args);
 
@@ -38,6 +38,7 @@ public class Launcher {
         }
         if(cmd.hasOption("create")) {
             createDB(cmd.getOptionValue("create"));
+            return;
         }
         System.out.println("Usage: launcher (open|create) DBPath");
     }
@@ -60,7 +61,7 @@ public class Launcher {
     }
 
     private static long parseMem(String memStr) {
-        if("".equals(memStr)) {
+        if(memStr == null || "".equals(memStr)) {
             return DEFALUT_MEM;
         }
         if(memStr.length() < 2) {

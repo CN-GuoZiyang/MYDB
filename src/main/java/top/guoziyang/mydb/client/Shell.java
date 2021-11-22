@@ -14,8 +14,7 @@ public class Shell {
         try {
             while(true) {
                 System.out.print(":> ");
-                String line = sc.nextLine();
-                String statStr = line.substring(0, line.length()-1);
+                String statStr = sc.nextLine();
                 if("exit".equals(statStr) || "quit".equals(statStr)) {
                     break;
                 }

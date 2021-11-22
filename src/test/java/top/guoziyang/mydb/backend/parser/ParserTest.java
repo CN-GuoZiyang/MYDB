@@ -10,7 +10,7 @@ import top.guoziyang.mydb.backend.parser.statement.Begin;
 import top.guoziyang.mydb.backend.parser.statement.Create;
 import top.guoziyang.mydb.backend.parser.statement.Delete;
 import top.guoziyang.mydb.backend.parser.statement.Insert;
-import top.guoziyang.mydb.backend.parser.statement.Read;
+import top.guoziyang.mydb.backend.parser.statement.Select;
 import top.guoziyang.mydb.backend.parser.statement.Show;
 import top.guoziyang.mydb.backend.parser.statement.Update;
 
@@ -51,7 +51,7 @@ public class ParserTest {
     public void testRead() throws Exception {
         String stat = "read name, id, strudeng from student where id > 1 and id < 4";
         Object res = Parser.Parse(stat.getBytes());
-        Read read = (Read)res;
+        Select read = (Select)res;
         assert "student".equals(read.tableName);
         Gson gson = new Gson();
         System.out.println("Read");
