@@ -40,4 +40,7 @@ public class Error {
     // server
     public static final Exception NestedTransactionException = new RuntimeException("Nested transaction not supported!");
     public static final Exception NoTransactionException = new RuntimeException("Not in transaction!");
+
+    // launcher
+    public static final Exception InvalidMemException = new RuntimeException("Invalid memory!");
 }
