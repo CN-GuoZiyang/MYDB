@@ -91,11 +91,13 @@ class HandleSocket implements Runnable {
                 result = exe.execute(sql);
             } catch (Exception e1) {
                 e = e1;
+                e.printStackTrace();
             }
             pkg = new Package(result, e);
             try {
                 packager.send(pkg);
             } catch (Exception e1) {
+                e1.printStackTrace();
                 break;
             }
         }

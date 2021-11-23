@@ -1,5 +1,6 @@
 package top.guoziyang.mydb.backend.tbm;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +83,9 @@ public class TableManagerImpl implements TableManager {
                 sb.append(tb.toString()).append("\n");
             }
             List<Table> t = xidTableCache.get(xid);
+            if(t == null) {
+                return "\n".getBytes();
+            }
             for (Table tb : t) {
                 sb.append(tb.toString()).append("\n");
             }

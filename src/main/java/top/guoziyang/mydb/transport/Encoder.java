@@ -11,7 +11,11 @@ public class Encoder {
     public byte[] encode(Package pkg) {
         if(pkg.getErr() != null) {
             Exception err = pkg.getErr();
-            return Bytes.concat(new byte[]{1}, err.getMessage().getBytes());
+            String msg = "Intern server error!";
+            if(err.getMessage() != null) {
+                msg = err.getMessage();
+            }
+            return Bytes.concat(new byte[]{1}, msg.getBytes());
         } else {
             return Bytes.concat(new byte[]{0}, pkg.getData());
         }

@@ -2,7 +2,11 @@ package top.guoziyang.mydb.transport;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,42 +19,40 @@ import org.apache.commons.codec.binary.Hex;
 
 public class Transpoter {
     private Socket socket;
-    private BufferedInputStream reader;
-    private BufferedOutputStream writer;
+    private BufferedReader reader;
+    private BufferedWriter writer;
 
     public Transpoter(Socket socket) throws IOException {
         this.socket = socket;
-        this.reader = new BufferedInputStream(socket.getInputStream());
-        this.writer = new BufferedOutputStream(socket.getOutputStream());
+        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
 
     public void send(byte[] data) throws Exception {
-        byte[] raw = hexEncode(data);
+        String raw = hexEncode(data);
         writer.write(raw);
         writer.flush();
     }
 
     public byte[] receive() throws Exception {
-        List<Byte> bytes = new ArrayList<>();
-        while(true) {
-            byte b = (byte)reader.read();
-            bytes.add(b);
-            if(b == '\n') {
-                break;
-            }
+        String line = reader.readLine();
+        if(line == null) {
+            close();
         }
-        return hexDecode(Bytes.toArray(bytes));
+        return hexDecode(line);
     }
 
     public void close() throws IOException {
+        writer.close();
+        reader.close();
         socket.close();
     }
 
-    private byte[] hexEncode(byte[] buf) {
-        return (Hex.encodeHexString(buf, true)+"\n").getBytes();
+    private String hexEncode(byte[] buf) {
+        return Hex.encodeHexString(buf, true)+"\n";
     }
 
-    private byte[] hexDecode(byte[] buf) throws DecoderException {
-        return Hex.decodeHex(new String(Arrays.copyOf(buf, buf.length-1)));
+    private byte[] hexDecode(String buf) throws DecoderException {
+        return Hex.decodeHex(buf);
     }
 }

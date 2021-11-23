@@ -107,8 +107,10 @@ public class VersionManagerImpl extends AbstractCache<Entry> implements VersionM
                 t.autoAborted = true;
                 throw t.err;
             }
-            l.lock();
-            l.unlock();
+            if(l != null) {
+                l.lock();
+                l.unlock();
+            }
 
             if(entry.getXmax() == xid) {
                 return false;
