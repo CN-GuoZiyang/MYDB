@@ -44,7 +44,7 @@ public interface Logger {
         try {
             fc.position(0);
             fc.write(buf);
-            fc.force(true);
+            fc.force(false);
         } catch (IOException e) {
             Panic.panic(e);
         }

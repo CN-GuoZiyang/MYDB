@@ -98,7 +98,7 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
             ByteBuffer buf = ByteBuffer.wrap(pg.getData());
             fc.position(offset);
             fc.write(buf);
-            fc.force(true);
+            fc.force(false);
         } catch(IOException e) {
             Panic.panic(e);
         } finally {

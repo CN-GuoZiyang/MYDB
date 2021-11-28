@@ -87,7 +87,7 @@ public class TransactionManagerImpl implements TransactionManager {
             Panic.panic(e);
         }
         try {
-            fc.force(true);
+            fc.force(false);
         } catch (IOException e) {
             Panic.panic(e);
         }
@@ -104,7 +104,7 @@ public class TransactionManagerImpl implements TransactionManager {
             Panic.panic(e);
         }
         try {
-            fc.force(true);
+            fc.force(false);
         } catch (IOException e) {
             Panic.panic(e);
         }

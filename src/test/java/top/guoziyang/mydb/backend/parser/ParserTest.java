@@ -49,14 +49,14 @@ public class ParserTest {
 
     @Test
     public void testRead() throws Exception {
-        String stat = "read name, id, strudeng from student where id > 1 and id < 4";
+        String stat = "select name, id, strudeng from student where id > 1 and id < 4";
         Object res = Parser.Parse(stat.getBytes());
-        Select read = (Select)res;
-        assert "student".equals(read.tableName);
+        Select select = (Select)res;
+        assert "student".equals(select.tableName);
         Gson gson = new Gson();
-        System.out.println("Read");
-        System.out.println(gson.toJson(read.fields));
-        System.out.println(gson.toJson(read.where));
+        System.out.println("Select");
+        System.out.println(gson.toJson(select.fields));
+        System.out.println(gson.toJson(select.where));
         System.out.println("======================");
     }
 

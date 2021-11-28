@@ -137,7 +137,7 @@ public class LoggerImpl implements Logger {
         try {
             fc.position(0);
             fc.write(ByteBuffer.wrap(Parser.int2Byte(xChecksum)));
-            fc.force(true);
+            fc.force(false);
         } catch(IOException e) {
             Panic.panic(e);
         }
