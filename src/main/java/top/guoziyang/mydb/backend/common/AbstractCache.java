@@ -68,7 +68,7 @@ public abstract class AbstractCache<T> {
             lock.lock();
             count --;
             getting.remove(key);
-            lock.lock();
+            lock.unlock();
             throw e;
         }
 
