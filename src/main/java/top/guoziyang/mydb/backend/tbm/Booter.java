@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.common.Error;
@@ -79,7 +80,11 @@ public class Booter {
         } catch(IOException e) {
             Panic.panic(e);
         }
-        tmp.renameTo(new File(path+BOOTER_SUFFIX));
+        try {
+            Files.move(tmp.toPath(), new File(path+BOOTER_SUFFIX).toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch(IOException e) {
+            Panic.panic(e);
+        }
         file = new File(path+BOOTER_SUFFIX);
         if(!file.canRead() || !file.canWrite()) {
             Panic.panic(Error.FileCannotRWException);

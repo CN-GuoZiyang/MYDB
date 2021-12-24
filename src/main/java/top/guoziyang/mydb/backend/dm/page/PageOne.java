@@ -44,6 +44,6 @@ public class PageOne {
     }
 
     private static boolean checkVc(byte[] raw) {
-        return Arrays.compare(raw, OF_VC, OF_VC+LEN_VC, raw, OF_VC+LEN_VC, OF_VC+2*LEN_VC) == 0;
+        return Arrays.equals(Arrays.copyOfRange(raw, OF_VC, OF_VC+LEN_VC), Arrays.copyOfRange(raw, OF_VC+LEN_VC, OF_VC+2*LEN_VC));
     }
 }
