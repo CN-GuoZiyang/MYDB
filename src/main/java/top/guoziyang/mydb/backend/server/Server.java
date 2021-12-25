@@ -12,7 +12,7 @@ import top.guoziyang.mydb.backend.tbm.TableManager;
 import top.guoziyang.mydb.transport.Encoder;
 import top.guoziyang.mydb.transport.Package;
 import top.guoziyang.mydb.transport.Packager;
-import top.guoziyang.mydb.transport.Transpoter;
+import top.guoziyang.mydb.transport.Transporter;
 
 public class Server {
     private int port;
@@ -64,7 +64,7 @@ class HandleSocket implements Runnable {
         System.out.println("Establish connection: " + address.getAddress().getHostAddress()+":"+address.getPort());
         Packager packager = null;
         try {
-            Transpoter t = new Transpoter(socket);
+            Transporter t = new Transporter(socket);
             Encoder e = new Encoder();
             packager = new Packager(t, e);
         } catch(IOException e) {

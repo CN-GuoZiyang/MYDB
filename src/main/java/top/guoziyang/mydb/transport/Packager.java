@@ -1,10 +1,10 @@
 package top.guoziyang.mydb.transport;
 
 public class Packager {
-    private Transpoter transpoter;
+    private Transporter transpoter;
     private Encoder encoder;
 
-    public Packager(Transpoter transpoter, Encoder encoder) {
+    public Packager(Transporter transpoter, Encoder encoder) {
         this.transpoter = transpoter;
         this.encoder = encoder;
     }

@@ -10,12 +10,12 @@ import java.net.Socket;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
-public class Transpoter {
+public class Transporter {
     private Socket socket;
     private BufferedReader reader;
     private BufferedWriter writer;
 
-    public Transpoter(Socket socket) throws IOException {
+    public Transporter(Socket socket) throws IOException {
         this.socket = socket;
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
