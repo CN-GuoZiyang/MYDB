@@ -16,7 +16,7 @@ public class PackagerTest {
                 try {
                     ServerSocket ss = new ServerSocket(10345);
                     Socket socket = ss.accept();
-                    Transpoter t = new Transpoter(socket);
+                    Transporter t = new Transporter(socket);
                     Encoder e = new Encoder();
                     Packager p = new Packager(t, e);
                     Package one = p.receive();
@@ -31,7 +31,7 @@ public class PackagerTest {
             }
         }).start();
         Socket socket = new Socket("127.0.0.1", 10345);
-        Transpoter t = new Transpoter(socket);
+        Transporter t = new Transporter(socket);
         Encoder e = new Encoder();
         Packager p = new Packager(t, e);
         p.send(new Package("pkg1 test".getBytes(), null));
