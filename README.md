@@ -13,7 +13,15 @@ MYDB 是一个 Java 实现的简单的数据库，部分原理参照自 MySQL、
 
 ## 运行方式
 
-首先执行以下命令以 /tmp/mydb 作为路径创建数据库：
+注意首先需要在 pom.xml 中调整编译版本，如果导入 IDE，请更改项目的编译版本以适应你的 JDK
+
+首先执行以下命令编译源码：
+
+```shell
+mvn compile
+```
+
+接着执行以下命令以 /tmp/mydb 作为路径创建数据库：
 
 ```shell
 mvn exec:java -Dexec.mainClass="top.guoziyang.mydb.backend.Launcher" -Dexec.args="-create /tmp/mydb"
