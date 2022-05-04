@@ -78,7 +78,7 @@ public class DataManagerTest {
 
                     data0.rLock(); data1.rLock();
                     SubArray s0 = data0.data(); SubArray s1 = data1.data();
-                    assert Arrays.compare(Arrays.copyOfRange(s0.raw, s0.start, s0.end), Arrays.copyOfRange(s1.raw, s1.start, s1.end)) == 0;
+                    assert Arrays.equals(Arrays.copyOfRange(s0.raw, s0.start, s0.end), Arrays.copyOfRange(s1.raw, s1.start, s1.end));
                     data0.rUnLock(); data1.rUnLock();
 
                     byte[] newData = RandomUtil.randomBytes(dataLen);
