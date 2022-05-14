@@ -110,7 +110,8 @@ public abstract class AbstractCache<T> {
         try {
             Set<Long> keys = cache.keySet();
             for (long key : keys) {
-                release(key);
+                T obj = cache.get(key);
+                releaseForCache(obj);
                 references.remove(key);
                 cache.remove(key);
             }
