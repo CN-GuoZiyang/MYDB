@@ -165,8 +165,8 @@ public class Recover {
         li.xid = Parser.parseLong(Arrays.copyOfRange(log, OF_XID, OF_UPDATE_UID));
         long uid = Parser.parseLong(Arrays.copyOfRange(log, OF_UPDATE_UID, OF_UPDATE_RAW));
         li.offset = (short)(uid & ((1L << 16) - 1));
-        uid >>>= 32;
-        li.pgno = (int)(uid & ((1L << 32) - 1));
+        uid >>>= 16;
+        li.pgno = (int)(uid & ((1L << 16) - 1));
         int length = (log.length - OF_UPDATE_RAW) / 2;
         li.oldRaw = Arrays.copyOfRange(log, OF_UPDATE_RAW, OF_UPDATE_RAW+length);
         li.newRaw = Arrays.copyOfRange(log, OF_UPDATE_RAW+length, OF_UPDATE_RAW+length*2);
