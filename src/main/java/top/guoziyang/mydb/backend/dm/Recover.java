@@ -164,7 +164,7 @@ public class Recover {
         UpdateLogInfo li = new UpdateLogInfo();
         li.xid = Parser.parseLong(Arrays.copyOfRange(log, OF_XID, OF_UPDATE_UID));
         long uid = Parser.parseLong(Arrays.copyOfRange(log, OF_UPDATE_UID, OF_UPDATE_RAW));
-        li.offset = (short)(uid & ((1L << 16) - 1));
+        li.offset = (short)(uid & ((1L << 32) - 1));
         uid >>>= 32;
         li.pgno = (int)(uid & ((1L << 32) - 1));
         int length = (log.length - OF_UPDATE_RAW) / 2;
