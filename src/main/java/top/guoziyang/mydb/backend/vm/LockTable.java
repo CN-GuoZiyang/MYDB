@@ -45,7 +45,8 @@ public class LockTable {
                 return null;
             }
             waitU.put(xid, uid);
-            putIntoList(wait, xid, uid);
+            //putIntoList(wait, xid, uid);
+            putIntoList(wait, uid, xid);
             if(hasDeadLock()) {
                 waitU.remove(xid);
                 removeFromList(wait, uid, xid);
