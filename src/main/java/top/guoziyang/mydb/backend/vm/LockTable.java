@@ -94,6 +94,7 @@ public class LockTable {
                 continue;
             } else {
                 u2x.put(uid, xid);
+                putIntoList(x2u, xid, uid);
                 Lock lo = waitLock.remove(xid);
                 waitU.remove(xid);
                 lo.unlock();
