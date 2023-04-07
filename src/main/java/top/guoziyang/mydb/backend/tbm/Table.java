@@ -138,7 +138,7 @@ public class Table {
             entry.put(fd.fieldName, value);
             raw = entry2Raw(entry);
             long uuid = ((TableManagerImpl)tbm).vm.insert(xid, raw);
-            
+
             count ++;
 
             for (Field field : fields) {
@@ -157,7 +157,7 @@ public class Table {
             byte[] raw = ((TableManagerImpl)tbm).vm.read(xid, uid);
             if(raw == null) continue;
             Map<String, Object> entry = parseEntry(raw);
-            sb.append(printEntry(entry)).append("\n");
+            sb.append(printEntry(entry, read)).append("\n");
         }
         return sb.toString();
     }
@@ -261,12 +261,31 @@ public class Table {
         return res;
     }
 
-    private String printEntry(Map<String, Object> entry) {
+    private String printEntry(Map<String, Object> entry, Select select) {
         StringBuilder sb = new StringBuilder("[");
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
-            sb.append(field.printValue(entry.get(field.fieldName)));
-            if(i == fields.size()-1) {
+
+        //获取select中需要的字段
+        int selectFieldsLen = select.fields.length;
+        List<Field> printField = new ArrayList<>();
+        if(selectFieldsLen > 0 && select.fields[0].equals("*")) {
+            printField = fields;
+        } else {
+            for (int i = 0; i < selectFieldsLen; i++) {
+                for(Field field : fields) {
+                    if(field.fieldName.equals(select.fields[i])) {
+                        printField.add(field);
+                        break;
+                    }
+                }
+            }
+        }
+
+        //向sb中添加需要字段的value
+        int len = printField.size();
+        for (int i = 0; i < len; i++) {
+            Field fd = printField.get(i);
+            sb.append(fd.printValue(entry.get(fd.fieldName)));
+            if(i == len-1) {
                 sb.append("]");
             } else {
                 sb.append(", ");
