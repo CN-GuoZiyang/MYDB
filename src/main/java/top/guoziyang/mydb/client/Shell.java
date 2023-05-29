@@ -2,10 +2,16 @@ package top.guoziyang.mydb.client;
 
 import java.util.Scanner;
 
-public class Shell {
-    private Client client;
 
-    public Shell(Client client) {
+/**
+* 改用Netty客户端
+* 作者：RioAngele
+* 时间：2023.5.23
+*/
+public class Shell {
+    private NettyClient client;
+
+    public Shell(NettyClient client) {
         this.client = client;
     }
 
