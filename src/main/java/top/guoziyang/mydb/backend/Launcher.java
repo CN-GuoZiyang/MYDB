@@ -7,6 +7,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import top.guoziyang.mydb.backend.dm.DataManager;
+import top.guoziyang.mydb.backend.server.NettyServer;
 import top.guoziyang.mydb.backend.server.Server;
 import top.guoziyang.mydb.backend.tbm.TableManager;
 import top.guoziyang.mydb.backend.tm.TransactionManager;
@@ -17,7 +18,7 @@ import top.guoziyang.mydb.common.Error;
 
 public class Launcher {
 
-    public static final int port = 9999;
+    public static final int port = 7777;
 
     public static final long DEFALUT_MEM = (1<<20)*64;
     public static final long KB = 1 << 10;
@@ -52,12 +53,18 @@ public class Launcher {
         dm.close();
     }
 
+
+    /**
+    * 改用Netty服务端
+    * 作者：RioAngele
+    * 时间：2023.5.23
+    */
     private static void openDB(String path, long mem) {
         TransactionManager tm = TransactionManager.open(path);
         DataManager dm = DataManager.open(path, mem, tm);
         VersionManager vm = new VersionManagerImpl(tm, dm);
         TableManager tbm = TableManager.open(path, vm, dm);
-        new Server(port, tbm).start();
+        new NettyServer(port, tbm).start();
     }
 
     private static long parseMem(String memStr) {
