@@ -1,6 +1,8 @@
 package top.guoziyang.mydb.backend.common;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -108,12 +110,12 @@ public abstract class AbstractCache<T> {
     protected void close() {
         lock.lock();
         try {
-            Set<Long> keys = cache.keySet();
-            for (long key : keys) {
-                T obj = cache.get(key);
-                releaseForCache(obj);
-                references.remove(key);
-                cache.remove(key);
+            Iterator<Map.Entry<Long, T>> iterator = cache.entrySet().iterator();
+            while(iterator.hasNext()){
+                Map.Entry<Long, T> entry = iterator.next();
+                releaseForCache(cache.get(entry.getKey()));
+                references.remove(entry.getKey());
+                iterator.remove();
             }
         } finally {
             lock.unlock();
