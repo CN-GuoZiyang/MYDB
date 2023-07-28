@@ -24,7 +24,8 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     private Lock fileLock;
 
     private AtomicInteger pageNumbers;
-
+    //初始化一个PageCacheImpl对象
+    //如果提供的可缓存页面张数小于最低值，就抛出异常
     PageCacheImpl(RandomAccessFile file, FileChannel fileChannel, int maxResource) {
         super(maxResource);
         if(maxResource < MEM_MIN_LIM) {
@@ -39,16 +40,18 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
         this.file = file;
         this.fc = fileChannel;
         this.fileLock = new ReentrantLock();
+        //打开数据库文件时，就会确定数据库文件的张数
         this.pageNumbers = new AtomicInteger((int)length / PAGE_SIZE);
     }
-
+    //创建一个新的页面，返回他的页面号码
+    //将新页面写进磁盘当中
     public int newPage(byte[] initData) {
         int pgno = pageNumbers.incrementAndGet();
         Page pg = new PageImpl(pgno, initData, null);
         flush(pg);
         return pgno;
     }
-
+    //根据页面号获得对应的页面
     public Page getPage(int pgno) throws Exception {
         return get((long)pgno);
     }
@@ -59,6 +62,7 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     @Override
     protected Page getForCache(long key) throws Exception {
         int pgno = (int)key;
+        //获取页面的偏移
         long offset = PageCacheImpl.pageOffset(pgno);
 
         ByteBuffer buf = ByteBuffer.allocate(PAGE_SIZE);
@@ -88,7 +92,10 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
     public void flushPage(Page pg) {
         flush(pg);
     }
-
+    //把该页面写进磁盘中
+    //获取页的页面号，该页面在文件中的偏移
+    //把页面的数据写进文件中指定的位置
+    //把缓冲区的数据刷新至硬盘中
     private void flush(Page pg) {
         int pgno = pg.getPageNumber();
         long offset = pageOffset(pgno);
@@ -105,7 +112,9 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
             fileLock.unlock();
         }
     }
-
+    //截断页面
+    //将数据库里的文件也截断
+    //设置pagenumber
     public void truncateByBgno(int maxPgno) {
         long size = pageOffset(maxPgno + 1);
         try {
@@ -115,7 +124,9 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
         }
         pageNumbers.set(maxPgno);
     }
-
+    //关闭pagecacheimpl
+    //关闭缓存，写回全部的资源
+    //关闭文件流，关闭通道
     @Override
     public void close() {
         super.close();
@@ -126,11 +137,11 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
             Panic.panic(e);
         }
     }
-
+    //获取数据库文件的最大页面
     public int getPageNumber() {
         return pageNumbers.intValue();
     }
-
+    //获取当前页面在文件中的偏移
     private static long pageOffset(int pgno) {
         return (pgno-1) * PAGE_SIZE;
     }

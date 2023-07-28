@@ -1,7 +1,7 @@
 package top.guoziyang.mydb.client;
 
 import java.util.Scanner;
-
+//读取用户在shell上的输入
 public class Shell {
     private Client client;
 

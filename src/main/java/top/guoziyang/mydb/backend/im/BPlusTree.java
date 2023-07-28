@@ -20,13 +20,19 @@ public class BPlusTree {
     long bootUid;
     DataItem bootDataItem;
     Lock bootLock;
-
+    //建立根节点
+    //将一个字段设置为索引时会用到的
     public static long create(DataManager dm) throws Exception {
+        //先构建一个空节点的原始数据
         byte[] rawRoot = Node.newNilRootRaw();
+        //将这个节点插入到文件当中，也就是说，这就是索引文件的数据
+        //返回这个根节点数据的地址
         long rootUid = dm.insert(TransactionManagerImpl.SUPER_XID, rawRoot);
+        //把事务id，根节点的地址，插入文件
+        //这才是索引文件
         return dm.insert(TransactionManagerImpl.SUPER_XID, Parser.long2Byte(rootUid));
     }
-
+    //读取节点的数据值，创建一个b+树对象
     public static BPlusTree load(long bootUid, DataManager dm) throws Exception {
         DataItem bootDataItem = dm.read(bootUid);
         assert bootDataItem != null;
@@ -37,7 +43,7 @@ public class BPlusTree {
         t.bootLock = new ReentrantLock();
         return t;
     }
-
+    //获得根节点的uid
     private long rootUid() {
         bootLock.lock();
         try {
@@ -47,11 +53,13 @@ public class BPlusTree {
             bootLock.unlock();
         }
     }
-
+    //更新根节点的uid值
     private void updateRootUid(long left, long right, long rightKey) throws Exception {
         bootLock.lock();
         try {
+            //创建一个新的根节点的值
             byte[] rootRaw = Node.newRootRaw(left, right, rightKey);
+            //先把这个根节点的值插入文件当中
             long newRootUid = dm.insert(TransactionManagerImpl.SUPER_XID, rootRaw);
             bootDataItem.before();
             SubArray diRaw = bootDataItem.data();
@@ -106,8 +114,9 @@ public class BPlusTree {
         }
         return uids;
     }
-
+    //将新的key插入到b+树中
     public void insert(long key, long uid) throws Exception {
+        //获得该索引树的根节点
         long rootUid = rootUid();
         InsertRes res = insert(rootUid, uid, key);
         assert res != null;
@@ -115,18 +124,23 @@ public class BPlusTree {
             updateRootUid(rootUid, res.newNode, res.newKey);
         }
     }
-
+    //插入新节点时用到的
+    //新的节点和新的key
     class InsertRes {
         long newNode, newKey;
     }
 
     private InsertRes insert(long nodeUid, long uid, long key) throws Exception {
+        //加载该索引树的根节点
         Node node = Node.loadNode(this, nodeUid);
+        //判断该节点是不是叶子节点
         boolean isLeaf = node.isLeaf();
+        //释放该节点
         node.release();
 
         InsertRes res = null;
         if(isLeaf) {
+            //如果是叶子结点的话
             res = insertAndSplit(nodeUid, uid, key);
         } else {
             long next = searchNext(nodeUid, key);
@@ -139,7 +153,7 @@ public class BPlusTree {
         }
         return res;
     }
-
+    //插入节点并且分裂
     private InsertRes insertAndSplit(long nodeUid, long uid, long key) throws Exception {
         while(true) {
             Node node = Node.loadNode(this, nodeUid);

@@ -5,9 +5,11 @@ import java.util.Arrays;
 import com.google.common.primitives.Bytes;
 
 import top.guoziyang.mydb.common.Error;
-
+//package在发送之前
+//由encoder编写为特殊的二维数组
 public class Encoder {
-
+    //判断该package是否错误
+    //将错误标志存在flag里面
     public byte[] encode(Package pkg) {
         if(pkg.getErr() != null) {
             Exception err = pkg.getErr();
@@ -20,7 +22,8 @@ public class Encoder {
             return Bytes.concat(new byte[]{0}, pkg.getData());
         }
     }
-
+    //根据错误状态位
+    //来解码
     public Package decode(byte[] data) throws Exception {
         if(data.length < 1) {
             throw Error.InvalidPkgDataException;

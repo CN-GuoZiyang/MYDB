@@ -7,7 +7,8 @@ import java.net.UnknownHostException;
 import top.guoziyang.mydb.transport.Encoder;
 import top.guoziyang.mydb.transport.Packager;
 import top.guoziyang.mydb.transport.Transporter;
-
+//打开客户端
+//设立端口
 public class Launcher {
     public static void main(String[] args) throws UnknownHostException, IOException {
         Socket socket = new Socket("127.0.0.1", 9999);
