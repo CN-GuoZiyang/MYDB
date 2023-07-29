@@ -212,6 +212,7 @@ public class Field {
     public FieldCalRes calExp(SingleExpression exp) throws Exception {
         Object v = null;
         FieldCalRes res = new FieldCalRes();
+        res.field = exp.field;
         switch(exp.compareOp) {
             case "<":
                 res.left = 0;

@@ -41,7 +41,7 @@ public class Launcher {
             createDB(cmd.getOptionValue("create"));
             return;
         }
-        openDB("/tmp/mydb",DEFALUT_MEM);
+        openDB("/Users/nica/Documents/MYDB/tmp/mydb",DEFALUT_MEM);
         System.out.println("Usage: launcher (open|create) DBPath");
     }
     //创建数据库文件
