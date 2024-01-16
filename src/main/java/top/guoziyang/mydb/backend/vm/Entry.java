@@ -24,6 +24,9 @@ public class Entry {
     private VersionManager vm;
 
     public static Entry newEntry(VersionManager vm, DataItem dataItem, long uid) {
+        if (dataItem == null) {
+            return null;
+        }
         Entry entry = new Entry();
         entry.uid = uid;
         entry.dataItem = dataItem;
