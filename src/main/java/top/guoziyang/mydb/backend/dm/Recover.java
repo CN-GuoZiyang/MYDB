@@ -86,7 +86,7 @@ public class Recover {
                 InsertLogInfo li = parseInsertLog(log);
                 long xid = li.xid;
                 if(!tm.isActive(xid)) {
-                    doInsertLog(pc, log, REDO);
+                    doInsertLog(pc, li, REDO);
                 }
             } else {
                 UpdateLogInfo xi = parseUpdateLog(log);
@@ -225,6 +225,29 @@ public class Recover {
 
     private static void doInsertLog(PageCache pc, byte[] log, int flag) {
         InsertLogInfo li = parseInsertLog(log);
+        Page pg = null;
+        try {
+            pg = pc.getPage(li.pgno);
+        } catch(Exception e) {
+            Panic.panic(e);
+        }
+        try {
+            if(flag == UNDO) {
+                DataItem.setDataItemRawInvalid(li.raw);
+            }
+            PageX.recoverInsert(pg, li.raw, li.offset);
+        } finally {
+            pg.release();
+        }
+    }
+
+    /*
+     * 重载doInsertLog（），减少log重复解析消耗
+     * 作者：RioAngele
+     * 时间：2023.5.23
+     */
+
+     private static void doInsertLog(PageCache pc,InsertLogInfo li , int flag) {
         Page pg = null;
         try {
             pg = pc.getPage(li.pgno);

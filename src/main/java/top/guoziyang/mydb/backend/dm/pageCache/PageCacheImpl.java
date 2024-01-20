@@ -41,11 +41,14 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
         this.fileLock = new ReentrantLock();
         this.pageNumbers = new AtomicInteger((int)length / PAGE_SIZE);
     }
-
+/*
+ * 改用重载方法flush（）
+ */
     public int newPage(byte[] initData) {
         int pgno = pageNumbers.incrementAndGet();
-        Page pg = new PageImpl(pgno, initData, null);
-        flush(pg);
+        // Page pg = new PageImpl(pgno, initData, null);
+        // flush(pg);
+        flush(pgno, initData);
         return pgno;
     }
 
@@ -105,6 +108,28 @@ public class PageCacheImpl extends AbstractCache<Page> implements PageCache {
             fileLock.unlock();
         }
     }
+
+    /*
+     * 重载 flush（）方法
+     * 作者：RioAngle
+     * 时间：2023.5.23
+     */
+
+     private void flush(int pgno,byte[] data) {
+        long offset = pageOffset(pgno);
+
+        fileLock.lock();
+        try {
+            ByteBuffer buf = ByteBuffer.wrap(data);
+            fc.position(offset);
+            fc.write(buf);
+            fc.force(false);
+        } catch(IOException e) {
+            Panic.panic(e);
+        } finally {
+            fileLock.unlock();
+        }
+    }     
 
     public void truncateByBgno(int maxPgno) {
         long size = pageOffset(maxPgno + 1);
