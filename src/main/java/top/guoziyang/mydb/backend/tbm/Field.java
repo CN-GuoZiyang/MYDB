@@ -26,7 +26,7 @@ public class Field {
     String fieldType;
     private long index;
     private BPlusTree bt;
-
+    //根据uid来读取字段的值
     public static Field loadField(Table tb, long uid) {
         byte[] raw = null;
         try {
@@ -49,7 +49,9 @@ public class Field {
         this.fieldType = fieldType;
         this.index = index;
     }
-
+    //解析数组中的字段信息
+    //从数组中提取字段名，字段类型，索引信息
+    //如果存在索引，指向该b+树
     private Field parseSelf(byte[] raw) {
         int position = 0;
         ParseStringRes res = Parser.parseString(raw);
@@ -68,10 +70,12 @@ public class Field {
         }
         return this;
     }
-
+    //创建一个字段的信息
     public static Field createField(Table tb, long xid, String fieldName, String fieldType, boolean indexed) throws Exception {
+        //检查字段是否合法
         typeCheck(fieldType);
         Field f = new Field(tb, fieldName, fieldType, 0);
+        //是否对该字段创建索引
         if(indexed) {
             long index = BPlusTree.create(((TableManagerImpl)tb.tbm).dm);
             BPlusTree bt = BPlusTree.load(index, ((TableManagerImpl)tb.tbm).dm);
@@ -81,14 +85,14 @@ public class Field {
         f.persistSelf(xid);
         return f;
     }
-
+    //将该字段表信息插入数据库文件中
     private void persistSelf(long xid) throws Exception {
         byte[] nameRaw = Parser.string2Byte(fieldName);
         byte[] typeRaw = Parser.string2Byte(fieldType);
         byte[] indexRaw = Parser.long2Byte(index);
         this.uid = ((TableManagerImpl)tb.tbm).vm.insert(xid, Bytes.concat(nameRaw, typeRaw, indexRaw));
     }
-
+    //检查字段类型
     private static void typeCheck(String fieldType) throws Exception {
         if(!"int32".equals(fieldType) && !"int64".equals(fieldType) && !"string".equals(fieldType)) {
             throw Error.InvalidFieldException;
@@ -98,16 +102,17 @@ public class Field {
     public boolean isIndexed() {
         return index != 0;
     }
-
+    //传入的key是字段对应的值，uid是该字段所在记录的物理位置
+    //将其插入到索引当中
     public void insert(Object key, long uid) throws Exception {
         long uKey = value2Uid(key);
         bt.insert(uKey, uid);
     }
-
+    //用范围查找的方式在字段中查找
     public List<Long> search(long left, long right) throws Exception {
         return bt.searchRange(left, right);
     }
-
+    //根据字段类型转化字段的值
     public Object string2Value(String str) {
         switch(fieldType) {
             case "int32":
@@ -119,7 +124,7 @@ public class Field {
         }
         return null;
     }
-
+    //获取该字段对应的uid？
     public long value2Uid(Object key) {
         long uid = 0;
         switch(fieldType) {
@@ -135,7 +140,7 @@ public class Field {
         }
         return uid;
     }
-
+    //根据字段类型转化字节数组
     public byte[] value2Raw(Object v) {
         byte[] raw = null;
         switch(fieldType) {
@@ -156,7 +161,7 @@ public class Field {
         Object v;
         int shift;
     }
-
+    //将原始数据转换为字段信息
     public ParseValueRes parserValue(byte[] raw) {
         ParseValueRes res = new ParseValueRes();
         switch(fieldType) {
@@ -203,10 +208,11 @@ public class Field {
             .append(")")
             .toString();
     }
-
+    //将表达式a>b这种类型变成？
     public FieldCalRes calExp(SingleExpression exp) throws Exception {
         Object v = null;
         FieldCalRes res = new FieldCalRes();
+        res.field = exp.field;
         switch(exp.compareOp) {
             case "<":
                 res.left = 0;

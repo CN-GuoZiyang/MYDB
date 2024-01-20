@@ -20,13 +20,14 @@ public class Transporter {
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
-
+    //将数据转化为16进制
+    //然后将数据写入输出流
     public void send(byte[] data) throws Exception {
         String raw = hexEncode(data);
         writer.write(raw);
         writer.flush();
     }
-
+    //接收数据
     public byte[] receive() throws Exception {
         String line = reader.readLine();
         if(line == null) {
@@ -34,17 +35,18 @@ public class Transporter {
         }
         return hexDecode(line);
     }
-
+    //关闭文件流
     public void close() throws IOException {
         writer.close();
         reader.close();
         socket.close();
     }
-
+    //将字节数组转化为16进制，并且在信息末尾加上换行符
+    //转化成十六进制是防止特殊字符被篡改的问题
     private String hexEncode(byte[] buf) {
         return Hex.encodeHexString(buf, true)+"\n";
     }
-
+    //将十六进制的数组转化为二进制的
     private byte[] hexDecode(String buf) throws DecoderException {
         return Hex.decodeHex(buf);
     }

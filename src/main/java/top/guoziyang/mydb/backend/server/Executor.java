@@ -29,10 +29,12 @@ public class Executor {
             tbm.abort(xid);
         }
     }
-
+    //执行sql语句
+    //先检查是否是关于事务的语句
     public byte[] execute(byte[] sql) throws Exception {
         System.out.println("Execute: " + new String(sql));
         Object stat = Parser.Parse(sql);
+        //先检查是不是开启事务
         if(Begin.class.isInstance(stat)) {
             if(xid != 0) {
                 throw Error.NestedTransactionException;
@@ -58,7 +60,7 @@ public class Executor {
             return execute2(stat);
         }
     }
-
+    //根据类型来选择不同的执行操作
     private byte[] execute2(Object stat) throws Exception {
         boolean tmpTransaction = false;
         Exception e = null;

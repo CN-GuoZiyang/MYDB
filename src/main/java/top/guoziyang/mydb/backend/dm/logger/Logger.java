@@ -17,7 +17,9 @@ public interface Logger {
     byte[] next();
     void rewind();
     void close();
-
+    //创建一个log文件
+    //生成文件流和文件通道去获取这个文件
+    //
     public static Logger create(String path) {
         File f = new File(path+LoggerImpl.LOG_SUFFIX);
         try {
@@ -39,11 +41,14 @@ public interface Logger {
         } catch (FileNotFoundException e) {
            Panic.panic(e);
         }
-
+        //把0写进去，是为了标志日志的初始状态
+        //因为日志的格式包括xchecksum，所以初始化的时候
+        //要将xchecksum初始化为0
         ByteBuffer buf = ByteBuffer.wrap(Parser.int2Byte(0));
         try {
             fc.position(0);
             fc.write(buf);
+            //metadata代表文件的权限，创建时间，修改时间。
             fc.force(false);
         } catch (IOException e) {
             Panic.panic(e);
@@ -51,7 +56,9 @@ public interface Logger {
 
         return new LoggerImpl(raf, fc, 0);
     }
-
+    //通过打开日志文件的方式，来创建一个logger
+    //这里就不需要给日志文件赋初值了
+    //直接创建文件流，通道读取文件就行了。
     public static Logger open(String path) {
         File f = new File(path+LoggerImpl.LOG_SUFFIX);
         if(!f.exists()) {

@@ -9,7 +9,7 @@ public class Client {
     public Client(Packager packager) {
         this.rt = new RoundTripper(packager);
     }
-
+    //利用RoundTripper来发送数据
     public byte[] execute(byte[] stat) throws Exception {
         Package pkg = new Package(stat, null);
         Package resPkg = rt.roundTrip(pkg);

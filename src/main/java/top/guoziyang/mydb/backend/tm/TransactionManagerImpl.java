@@ -51,10 +51,13 @@ public class TransactionManagerImpl implements TransactionManager {
         } catch (IOException e1) {
             Panic.panic(Error.BadXIDFileException);
         }
+        //意义在于，比8字节小，就说明这个文件根本没有文件头来记录管理事务的个数，所以文件肯定不合法
         if(fileLen < LEN_XID_HEADER_LENGTH) {
             Panic.panic(Error.BadXIDFileException);
         }
-
+        //建立一个缓冲区，来读取文件的文件头
+        //将前八个字节表示的字节数转化成一个long类型的值
+        //代表当前管理的事务数，相当于事务数的最后一位
         ByteBuffer buf = ByteBuffer.allocate(LEN_XID_HEADER_LENGTH);
         try {
             fc.position(0);
@@ -62,8 +65,10 @@ public class TransactionManagerImpl implements TransactionManager {
         } catch (IOException e) {
             Panic.panic(e);
         }
+        //获取事务数最后一位在文件中的偏移
         this.xidCounter = Parser.parseLong(buf.array());
         long end = getXidPosition(this.xidCounter + 1);
+        //如果偏移量和长度不相同，就说明文件不合法
         if(end != fileLen) {
             Panic.panic(Error.BadXIDFileException);
         }
@@ -87,6 +92,8 @@ public class TransactionManagerImpl implements TransactionManager {
             Panic.panic(e);
         }
         try {
+            //虽然数据已经写入文件通道，但还只是存储在内存当中
+            //所以这里强制进行刷新
             fc.force(false);
         } catch (IOException e) {
             Panic.panic(e);

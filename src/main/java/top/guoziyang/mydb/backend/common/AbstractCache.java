@@ -26,7 +26,7 @@ public abstract class AbstractCache<T> {
         getting = new HashMap<>();
         lock = new ReentrantLock();
     }
-
+    //读取资源
     protected T get(long key) throws Exception {
         while(true) {
             lock.lock();

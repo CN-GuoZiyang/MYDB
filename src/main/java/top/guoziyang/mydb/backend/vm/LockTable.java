@@ -36,22 +36,35 @@ public class LockTable {
     public Lock add(long xid, long uid) throws Exception {
         lock.lock();
         try {
+            //看xid是否拥有uid这个资源
             if(isInList(x2u, xid, uid)) {
                 return null;
             }
+            //如果uid这个资源还没被其他xid持有
+            //把uid这个资源交给xid
+            //加入map中
             if(!u2x.containsKey(uid)) {
                 u2x.put(uid, xid);
                 putIntoList(x2u, xid, uid);
                 return null;
             }
+            //如果uid被其他xid持有了
+            //将xid加入等待资源队列
             waitU.put(xid, uid);
             //putIntoList(wait, xid, uid);
+            //加入等待uid的xid列表
             putIntoList(wait, uid, xid);
+            //检查是否死锁
             if(hasDeadLock()) {
+                //检测到了死锁
+                //将xid从等待资源移除
+                //将xid从等待uid资源队列移除
+                //抛出异常
                 waitU.remove(xid);
                 removeFromList(wait, uid, xid);
                 throw Error.DeadlockException;
             }
+            //将该xid加入真正的锁的队列
             Lock l = new ReentrantLock();
             l.lock();
             waitLock.put(xid, l);
@@ -61,10 +74,11 @@ public class LockTable {
             lock.unlock();
         }
     }
-
+    //在一个事务commit或者aborted的时候，释放锁
     public void remove(long xid) {
         lock.lock();
         try {
+            //获取xid持有的全部uid资源
             List<Long> l = x2u.get(xid);
             if(l != null) {
                 while(l.size() > 0) {
@@ -84,15 +98,21 @@ public class LockTable {
     // 从等待队列中选择一个xid来占用uid
     private void selectNewXID(long uid) {
         u2x.remove(uid);
+        //获取等待uid资源的xid队列
         List<Long> l = wait.get(uid);
         if(l == null) return;
         assert l.size() > 0;
 
         while(l.size() > 0) {
+            //将xid从等待uid队列去除
             long xid = l.remove(0);
+            //查看等待锁队列里是否有该事务
             if(!waitLock.containsKey(xid)) {
                 continue;
             } else {
+                //如果有的话
+                //将xid放入map，说明xid持有uid
+                //把xid从等待锁中去除
                 u2x.put(uid, xid);
                 Lock lo = waitLock.remove(xid);
                 waitU.remove(xid);
@@ -100,7 +120,7 @@ public class LockTable {
                 break;
             }
         }
-
+        //如果列表里面没有等待的xid了，就去除掉该uid的key
         if(l.size() == 0) wait.remove(uid);
     }
 
@@ -110,6 +130,9 @@ public class LockTable {
     private boolean hasDeadLock() {
         xidStamp = new HashMap<>();
         stamp = 1;
+        //遍历每个节点，为每个节点设置访问戳
+        //不同的图的访问戳是不同的
+        //对每个图进行深度搜索
         for(long xid : x2u.keySet()) {
             Integer s = xidStamp.get(xid);
             if(s != null && s > 0) {
@@ -122,7 +145,9 @@ public class LockTable {
         }
         return false;
     }
-
+    //核心就是检查该事务是否缺少资源uid
+    //然后找持有该uid的资源xid
+    //再进行深度搜索
     private boolean dfs(long xid) {
         Integer stp = xidStamp.get(xid);
         if(stp != null && stp == stamp) {
@@ -139,7 +164,7 @@ public class LockTable {
         assert x != null;
         return dfs(x);
     }
-
+    //将xid从对应的列表中删除
     private void removeFromList(Map<Long, List<Long>> listMap, long uid0, long uid1) {
         List<Long> l = listMap.get(uid0);
         if(l == null) return;
@@ -155,14 +180,14 @@ public class LockTable {
             listMap.remove(uid0);
         }
     }
-
+    //将xid加入对应的列表
     private void putIntoList(Map<Long, List<Long>> listMap, long uid0, long uid1) {
         if(!listMap.containsKey(uid0)) {
             listMap.put(uid0, new ArrayList<>());
         }
         listMap.get(uid0).add(0, uid1);
     }
-
+    //查看事务是否拥有uid该资源
     private boolean isInList(Map<Long, List<Long>> listMap, long uid0, long uid1) {
         List<Long> l = listMap.get(uid0);
         if(l == null) return false;

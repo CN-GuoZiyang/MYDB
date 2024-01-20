@@ -6,13 +6,15 @@ import java.util.Map;
 import top.guoziyang.mydb.backend.tm.TransactionManagerImpl;
 
 // vm对一个事务的抽象
+//保存当前系统事务的快照
 public class Transaction {
     public long xid;
+    //隔离级别
     public int level;
     public Map<Long, Boolean> snapshot;
     public Exception err;
     public boolean autoAborted;
-
+    //系统中还处在活跃中的事务
     public static Transaction newTransaction(long xid, int level, Map<Long, Transaction> active) {
         Transaction t = new Transaction();
         t.xid = xid;
@@ -25,7 +27,7 @@ public class Transaction {
         }
         return t;
     }
-
+    //检查事务是否是活跃当中的
     public boolean isInSnapshot(long xid) {
         if(xid == TransactionManagerImpl.SUPER_XID) {
             return false;

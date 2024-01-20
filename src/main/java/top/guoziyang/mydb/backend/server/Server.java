@@ -22,8 +22,9 @@ public class Server {
         this.port = port;
         this.tbm = tbm;
     }
-
+    //启动服务器
     public void start() {
+        //启动ServerSocket监听端口
         ServerSocket ss = null;
         try {
             ss = new ServerSocket(port);
@@ -32,6 +33,7 @@ public class Server {
             return;
         }
         System.out.println("Server listen to port: " + port);
+        //建立一个线程池
         ThreadPoolExecutor tpe = new ThreadPoolExecutor(10, 20, 1L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(100), new ThreadPoolExecutor.CallerRunsPolicy());
         try {
             while(true) {
@@ -63,6 +65,7 @@ class HandleSocket implements Runnable {
         InetSocketAddress address = (InetSocketAddress)socket.getRemoteSocketAddress();
         System.out.println("Establish connection: " + address.getAddress().getHostAddress()+":"+address.getPort());
         Packager packager = null;
+        //先初始化transporter，packager
         try {
             Transporter t = new Transporter(socket);
             Encoder e = new Encoder();
@@ -78,6 +81,7 @@ class HandleSocket implements Runnable {
         }
         Executor exe = new Executor(tbm);
         while(true) {
+            //获取package
             Package pkg = null;
             try {
                 pkg = packager.receive();
@@ -88,6 +92,7 @@ class HandleSocket implements Runnable {
             byte[] result = null;
             Exception e = null;
             try {
+                //将执行的结果返回到客户端页面上
                 result = exe.execute(sql);
             } catch (Exception e1) {
                 e = e1;

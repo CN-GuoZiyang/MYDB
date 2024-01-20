@@ -14,7 +14,7 @@ import top.guoziyang.mydb.backend.utils.Panic;
 import top.guoziyang.mydb.backend.vm.VersionManager;
 import top.guoziyang.mydb.backend.vm.VersionManagerImpl;
 import top.guoziyang.mydb.common.Error;
-
+//服务器的启动入口
 public class Launcher {
 
     public static final int port = 9999;
@@ -23,7 +23,8 @@ public class Launcher {
     public static final long KB = 1 << 10;
 	public static final long MB = 1 << 20;
 	public static final long GB = 1 << 30;
-
+    //调用CommandLine来解析命令行的参数是open还是create
+    //以此来决定是打开数据库文件还是创建数据库文件
     public static void main(String[] args) throws ParseException {
         Options options = new Options();
         options.addOption("open", true, "-open DBPath");
@@ -40,9 +41,10 @@ public class Launcher {
             createDB(cmd.getOptionValue("create"));
             return;
         }
+        openDB("/Users/nica/Documents/MYDB/tmp/mydb",DEFALUT_MEM);
         System.out.println("Usage: launcher (open|create) DBPath");
     }
-
+    //创建数据库文件
     private static void createDB(String path) {
         TransactionManager tm = TransactionManager.create(path);
         DataManager dm = DataManager.create(path, DEFALUT_MEM, tm);
@@ -51,7 +53,7 @@ public class Launcher {
         tm.close();
         dm.close();
     }
-
+    //打开数据库文件
     private static void openDB(String path, long mem) {
         TransactionManager tm = TransactionManager.open(path);
         DataManager dm = DataManager.open(path, mem, tm);
@@ -59,7 +61,8 @@ public class Launcher {
         TableManager tbm = TableManager.open(path, vm, dm);
         new Server(port, tbm).start();
     }
-
+    //根据给定的内存大小，创建指定大小的页内存
+    //就是指定数据库文件大小了
     private static long parseMem(String memStr) {
         if(memStr == null || "".equals(memStr)) {
             return DEFALUT_MEM;
