@@ -65,6 +65,7 @@ public class DataManagerImpl extends AbstractCache<DataItem> implements DataMana
         Page pg = null;
         int freeSpace = 0;
         try {
+            freeSpace = pi.freeSpace;
             pg = pc.getPage(pi.pgno);
             byte[] log = Recover.insertLog(xid, pg, raw);
             logger.log(log);
